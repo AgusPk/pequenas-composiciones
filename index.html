@@ -69,6 +69,21 @@
     rgba(92,72,38,.20) 36px, rgba(92,72,38,.20) 37px,
     transparent 37px, transparent 78px);
 }
+
+/* Manuscrito de Beethoven: sonata para piano op. 101 (1816), Library of Congress,
+   dominio publico. Va en una capa fija detras de todo — position:fixed en un
+   elemento propio y no background-attachment:fixed, que iOS no respeta y
+   estiraria la imagen a lo largo de los 80.000px de la pagina. */
+:root[data-tema="beethoven"]{
+  --bg:#e8e2d0; --ink:#221d15; --soft:#5b5142; --rule:#cbc0a6;
+  --accent:#87673c; --figbg:#e2dbc6;
+  --panel:rgba(252,250,244,.95);
+  --sombra-panel:0 0 40px rgba(70,58,32,.15);
+  --fondo-img:url("img/fondo-beethoven.jpg");
+}
+.fondo{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:var(--fondo-img,none);
+  background-size:cover;background-position:center;background-repeat:no-repeat}
 body{transition:background-color .25s ease, color .25s ease}
 @media (prefers-reduced-motion:reduce){body{transition:none}}
 *{box-sizing:border-box}
@@ -76,9 +91,15 @@ html{-webkit-text-size-adjust:100%}
 body{margin:0;background-color:var(--bg);background-image:var(--textura);
   color:var(--ink);font-family:var(--serif);
   font-size:19px;line-height:1.68;}
-.wrap{max-width:44rem;margin:0 auto;padding:4rem 1.25rem 6rem;
+.wrap{position:relative;z-index:1;max-width:44rem;margin:0 auto;padding:4rem 1.25rem 6rem;
   background:var(--panel);box-shadow:var(--sombra-panel)}
-@media (min-width:46rem){:root[data-tema="partitura"] .wrap{padding-left:3rem;padding-right:3rem}}
+@media (min-width:46rem){
+  :root[data-tema="partitura"] .wrap,
+  :root[data-tema="beethoven"] .wrap{padding-left:3rem;padding-right:3rem}
+}
+/* el credito de la imagen solo aparece cuando el fondo esta en uso */
+.credito{display:none;margin-top:.5rem;color:var(--soft);font-size:.78rem}
+:root[data-tema="beethoven"] .credito{display:block}
 h1{font-size:2.35rem;line-height:1.15;margin:0 0 .3rem;font-weight:600;letter-spacing:-.01em}
 .subtitle{margin:0 0 1.6rem;color:var(--soft);font-style:italic;font-size:1.15rem}
 .byline{margin:0 0 .2rem;font-variant:small-caps;letter-spacing:.06em;font-size:1rem}
@@ -1151,8 +1172,10 @@ footer a:hover{color:var(--accent);border-bottom-color:var(--accent)}
 </figure>
 <footer>
 <p><a href="Pequenas-composiciones-de-una-nina.docx" download>Descargar en Word (.docx)</a></p>
+<p class="credito">Fondo: Beethoven, boceto autógrafo de la Sonata para piano en La mayor, op.&nbsp;101 (1816). Library of Congress, Digital ID molden-0508. Dominio público.</p>
 </footer>
 </article>
+<div class="fondo" aria-hidden="true"></div>
 <div class="controles">
 <a class="subir" href="#indice" aria-label="Volver al índice">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
@@ -1173,6 +1196,10 @@ footer a:hover{color:var(--accent);border-bottom-color:var(--accent)}
 <path d="M3 6h18M3 10h18M3 14h18M3 18h18" opacity=".55"/>
 <circle cx="9" cy="15" r="2.1" fill="currentColor" stroke="none"/>
 <path d="M11.1 15V6.6"/><path d="M11.1 6.6c2.6.3 4.2 1.3 4.6 3"/></svg></button>
+<button type="button" data-tema="beethoven" aria-label="Fondo con manuscrito de Beethoven" title="Manuscrito de Beethoven">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path d="M4 20c0-6 3.5-13 15-16-1 8-5.5 13-11 13H4z"/><path d="M4 20c3-3.4 6-5.4 10.5-7"/></svg></button>
 </div>
 </div>
 <script>

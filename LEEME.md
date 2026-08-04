@@ -13,6 +13,7 @@ Versión ordenada del original `2 PEQUEÑAS COMPOSICIONES (1).docx`.
 | `img/` | Las 118 fotos, optimizadas para web (24 MB → 7,7 MB, ninguna pierde nitidez). |
 | `Pequenas-composiciones-de-una-nina.docx` | El mismo contenido en Word, para copiar y pegar en WordPress, Medium, Substack, etc. Se descarga también desde el pie de la página. |
 | `og.jpg` | La imagen de vista previa que aparece al compartir el link por WhatsApp o redes. |
+| `img/fondo-beethoven.jpg` | Fondo opcional: boceto autógrafo de la Sonata para piano op. 101 de Beethoven (1816), Library of Congress (Digital ID molden-0508), **dominio público**. Recortado, desaturado y aclarado para que no compita con el texto. |
 
 ## Qué se ordenó
 
@@ -38,6 +39,25 @@ Versión ordenada del original `2 PEQUEÑAS COMPOSICIONES (1).docx`.
 - **El texto.** Ni una palabra, ni la ortografía, ni la puntuación de la autora.
   Sólo espacios: los cambios de arriba son de espaciado y de orden, nunca de contenido.
 - **Las fotos que no tenían epígrafe siguen sin epígrafe.** No se inventó ninguno.
+
+## Los cuatro fondos
+
+Abajo a la derecha el lector elige: claro, oscuro, papel de partitura o el
+manuscrito de Beethoven. La elección se recuerda en el navegador. Si no elige
+nada, la página sigue al tema del sistema.
+
+Contraste del texto verificado en los cuatro (mínimo WCAG AA = 4.5):
+
+| Fondo | Texto | Epígrafes |
+|---|---|---|
+| Claro | 15.38 · AAA | 6.05 · AA |
+| Oscuro | 14.37 · AAA | 6.87 · AA |
+| Partitura | 15.07 · AAA | 7.16 · AAA |
+| Beethoven | 14.53 · AAA | 6.90 · AA |
+
+Los pentagramas del fondo "partitura" son gradientes CSS, no una imagen. El de
+Beethoven es la única imagen de fondo, y no se regenera con el build: está
+versionada en `img/`.
 
 ## Actualizarlo
 
