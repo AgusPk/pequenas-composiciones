@@ -86,6 +86,27 @@ figure.gallery figcaption{flex-basis:100%}
   figure.gallery img,figure.gallery.many img{height:auto;width:100%}
 }
 
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+h2,h3,.toc{scroll-margin-top:1.5rem}
+
+.subir{position:fixed;z-index:10;right:max(1rem,env(safe-area-inset-right));
+  bottom:max(1rem,env(safe-area-inset-bottom));
+  display:flex;align-items:center;gap:.4rem;
+  min-height:2.9rem;padding:0 1rem 0 .85rem;
+  border:1px solid var(--rule);border-radius:2rem;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  color:var(--soft);font-family:var(--sans);font-size:.85rem;text-decoration:none;
+  box-shadow:0 2px 10px rgba(0,0,0,.16);
+  opacity:0;visibility:hidden;transform:translateY(.5rem);
+  transition:opacity .22s ease, transform .22s ease, visibility .22s}
+.subir.visible{opacity:1;visibility:visible;transform:none}
+.subir:hover{color:var(--ink);border-color:var(--accent)}
+.subir svg{width:.85rem;height:.85rem;flex:none}
+@media (max-width:34rem){.subir span{display:none}.subir{padding:0;width:2.9rem;justify-content:center}}
+
 .closing{margin-top:3rem;padding-top:1.6rem;border-top:1px solid var(--rule);
   font-style:italic;color:var(--soft)}
 .sig{font-variant:small-caps;letter-spacing:.06em;margin:0 0 2rem}
@@ -102,7 +123,7 @@ footer a:hover{color:var(--accent);border-bottom-color:var(--accent)}
 <p class="subtitle">(en varios movimientos)</p>
 <p class="byline">Margarita Sastre Inchauspe</p>
 <p class="dateline">Buenos Aires Febrero 2026</p>
-<nav class="toc"><p class="toc-title">Movimientos</p><ol>
+<nav class="toc" id="indice"><p class="toc-title">Movimientos</p><ol>
 <li><a href="#mov1">Mov.1 Infancia, familia y El Correntino</a></li>
 <li><a href="#mov2">Mov 2: Miss Mary</a></li>
 <li><a href="#mov3">Mov 3: Campo y guitarra</a></li>
@@ -1075,5 +1096,21 @@ footer a:hover{color:var(--accent);border-bottom-color:var(--accent)}
 <p><a href="Pequenas-composiciones-de-una-nina.docx" download>Descargar en Word (.docx)</a></p>
 </footer>
 </article>
+<a class="subir" href="#indice" aria-label="Volver al índice">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path d="M12 19V5M5 12l7-7 7 7"/></svg><span>Índice</span></a>
+<script>
+(function(){
+  var b=document.querySelector('.subir'), toc=document.getElementById('indice');
+  if(!b||!toc)return;
+  // aparece sólo cuando el índice ya quedó fuera de pantalla
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(e){
+      b.classList.toggle('visible', !e[0].isIntersecting);
+    }).observe(toc);
+  }else{ b.classList.add('visible'); }
+})();
+</script>
 </body>
 </html>
