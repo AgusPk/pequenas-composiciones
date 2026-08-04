@@ -3,6 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>
+// corre antes de pintar: evita el destello blanco al abrir en modo oscuro
+(function(){try{var t=localStorage.getItem('tema');
+  if(t){document.documentElement.dataset.tema=t;}
+  else{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){});}
+}catch(e){}})();
+</script>
 <title>Pequeñas composiciones de una niña — Margarita Sastre Inchauspe</title>
 <meta name="description" content="Memorias de Margarita Sastre Inchauspe, en veintitrés movimientos: la infancia entre pianos, El Correntino, la familia y una vida entera contada mientras le hacían las manos.">
 <meta name="author" content="Margarita Sastre Inchauspe">
@@ -29,14 +37,48 @@
   --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
 }
+/* oscuro = variables; se aplica por preferencia del sistema o por eleccion
+   explicita. El :not() hace que la eleccion del lector gane siempre, y el
+   bloque por atributo mantiene el sitio usable sin JavaScript. */
 @media (prefers-color-scheme:dark){
-  :root{--bg:#16171a;--ink:#e8e6e1;--soft:#a3a099;--rule:#33342f;--accent:#d0ab72;--figbg:#1e1f22;}
+  :root:not([data-tema="claro"]){--bg:#16171a;--ink:#e8e6e1;--soft:#a3a099;
+    --rule:#33342f;--accent:#d0ab72;--figbg:#1e1f22;}
 }
+:root[data-tema="oscuro"]{--bg:#16171a;--ink:#e8e6e1;--soft:#a3a099;
+  --rule:#33342f;--accent:#d0ab72;--figbg:#1e1f22;}
+
+/* Papel de partitura. Los pentagramas van en el fondo de la pagina, y la
+   columna de texto se apoya sobre un panel de papel casi opaco: la textura se
+   ve en los margenes y apenas se insinua detras del texto, asi el contraste
+   practicamente no cambia. Nada de imagenes externas: son gradientes. */
+:root{--panel:transparent;--textura:none;--sombra-panel:none}
+:root[data-tema="partitura"]{
+  --bg:#e9dcbe; --ink:#241f16; --soft:#5b5142; --rule:#cdbd9a;
+  --accent:#8a6a3e; --figbg:#e3d6b6;
+  --panel:rgba(251,247,238,.94);
+  --sombra-panel:0 0 40px rgba(90,70,35,.13);
+  --textura:repeating-linear-gradient(to bottom,
+    rgba(92,72,38,.20) 0, rgba(92,72,38,.20) 1px,
+    transparent 1px, transparent 9px,
+    rgba(92,72,38,.20) 9px, rgba(92,72,38,.20) 10px,
+    transparent 10px, transparent 18px,
+    rgba(92,72,38,.20) 18px, rgba(92,72,38,.20) 19px,
+    transparent 19px, transparent 27px,
+    rgba(92,72,38,.20) 27px, rgba(92,72,38,.20) 28px,
+    transparent 28px, transparent 36px,
+    rgba(92,72,38,.20) 36px, rgba(92,72,38,.20) 37px,
+    transparent 37px, transparent 78px);
+}
+body{transition:background-color .25s ease, color .25s ease}
+@media (prefers-reduced-motion:reduce){body{transition:none}}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);
+body{margin:0;background-color:var(--bg);background-image:var(--textura);
+  color:var(--ink);font-family:var(--serif);
   font-size:19px;line-height:1.68;}
-.wrap{max-width:44rem;margin:0 auto;padding:4rem 1.25rem 6rem}
+.wrap{max-width:44rem;margin:0 auto;padding:4rem 1.25rem 6rem;
+  background:var(--panel);box-shadow:var(--sombra-panel)}
+@media (min-width:46rem){:root[data-tema="partitura"] .wrap{padding-left:3rem;padding-right:3rem}}
 h1{font-size:2.35rem;line-height:1.15;margin:0 0 .3rem;font-weight:600;letter-spacing:-.01em}
 .subtitle{margin:0 0 1.6rem;color:var(--soft);font-style:italic;font-size:1.15rem}
 .byline{margin:0 0 .2rem;font-variant:small-caps;letter-spacing:.06em;font-size:1rem}
@@ -90,9 +132,10 @@ html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 h2,h3,.toc{scroll-margin-top:1.5rem}
 
-.subir{position:fixed;z-index:10;right:max(1rem,env(safe-area-inset-right));
+.controles{position:fixed;z-index:10;right:max(1rem,env(safe-area-inset-right));
   bottom:max(1rem,env(safe-area-inset-bottom));
-  display:flex;align-items:center;gap:.4rem;
+  display:flex;align-items:center;gap:.5rem}
+.subir,.tema{display:flex;align-items:center;gap:.4rem;
   min-height:2.9rem;padding:0 1rem 0 .85rem;
   border:1px solid var(--rule);border-radius:2rem;
   background:var(--bg);
@@ -103,8 +146,22 @@ h2,h3,.toc{scroll-margin-top:1.5rem}
   opacity:0;visibility:hidden;transform:translateY(.5rem);
   transition:opacity .22s ease, transform .22s ease, visibility .22s}
 .subir.visible{opacity:1;visibility:visible;transform:none}
-.subir:hover{color:var(--ink);border-color:var(--accent)}
-.subir svg{width:.85rem;height:.85rem;flex:none}
+.subir:hover,.tema:hover{color:var(--ink);border-color:var(--accent)}
+.subir svg,.tema svg{width:.95rem;height:.95rem;flex:none}
+/* los tres fondos: siempre disponibles, no dependen del scroll */
+.temas{display:flex;gap:2px;padding:3px;
+  border:1px solid var(--rule);border-radius:2rem;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  box-shadow:0 2px 10px rgba(0,0,0,.16)}
+.temas button{display:flex;align-items:center;justify-content:center;
+  width:2.3rem;height:2.3rem;padding:0;border:0;border-radius:2rem;
+  background:transparent;color:var(--soft);cursor:pointer;font:inherit;
+  transition:background-color .18s ease, color .18s ease}
+.temas button:hover{color:var(--ink)}
+.temas button[aria-pressed="true"]{background:var(--figbg);color:var(--accent)}
+.temas svg{width:1.05rem;height:1.05rem;flex:none}
 @media (max-width:34rem){.subir span{display:none}.subir{padding:0;width:2.9rem;justify-content:center}}
 
 .closing{margin-top:3rem;padding-top:1.6rem;border-top:1px solid var(--rule);
@@ -1096,10 +1153,28 @@ footer a:hover{color:var(--accent);border-bottom-color:var(--accent)}
 <p><a href="Pequenas-composiciones-de-una-nina.docx" download>Descargar en Word (.docx)</a></p>
 </footer>
 </article>
+<div class="controles">
 <a class="subir" href="#indice" aria-label="Volver al índice">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
      stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 <path d="M12 19V5M5 12l7-7 7 7"/></svg><span>Índice</span></a>
+<div class="temas" role="group" aria-label="Fondo de la página">
+<button type="button" data-tema="claro" aria-label="Fondo claro" title="Claro">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4"/></svg></button>
+<button type="button" data-tema="oscuro" aria-label="Fondo oscuro" title="Oscuro">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+<button type="button" data-tema="partitura" aria-label="Fondo de partitura" title="Partitura">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path d="M3 6h18M3 10h18M3 14h18M3 18h18" opacity=".55"/>
+<circle cx="9" cy="15" r="2.1" fill="currentColor" stroke="none"/>
+<path d="M11.1 15V6.6"/><path d="M11.1 6.6c2.6.3 4.2 1.3 4.6 3"/></svg></button>
+</div>
+</div>
 <script>
 (function(){
   var b=document.querySelector('.subir'), toc=document.getElementById('indice');
@@ -1110,6 +1185,30 @@ footer a:hover{color:var(--accent);border-bottom-color:var(--accent)}
       b.classList.toggle('visible', !e[0].isIntersecting);
     }).observe(toc);
   }else{ b.classList.add('visible'); }
+})();
+(function(){
+  var grupo=document.querySelector('.temas'); if(!grupo)return;
+  var raiz=document.documentElement;
+  function resuelto(){
+    return raiz.dataset.tema
+      || (matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro');
+  }
+  function marcar(){
+    var actual=resuelto();
+    Array.prototype.forEach.call(grupo.querySelectorAll('button'),function(b){
+      b.setAttribute('aria-pressed', String(b.dataset.tema===actual));
+    });
+  }
+  grupo.addEventListener('click',function(e){
+    var b=e.target.closest ? e.target.closest('button[data-tema]') : null;
+    if(!b)return;
+    raiz.dataset.tema=b.dataset.tema;
+    try{ localStorage.setItem('tema', b.dataset.tema); }catch(e){}
+    marcar();
+  });
+  // si el lector no eligio nada, seguir al sistema cuando cambie
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',marcar);
+  marcar();
 })();
 </script>
 </body>
