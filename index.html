@@ -71,15 +71,19 @@ figure.row.n2{grid-template-columns:repeat(2,1fr)}
 figure.row.n3{grid-template-columns:repeat(3,1fr)}
 figure.row figcaption{grid-column:1/-1}
 
-figure.gallery{display:grid;gap:1rem;grid-template-columns:repeat(auto-fill,minmax(11rem,1fr))}
-figure.gallery img{max-height:26rem}
-figure.gallery figcaption{grid-column:1/-1}
+figure.gallery{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center}
+figure.gallery img{height:17.5rem;width:auto;max-width:100%;max-height:none}
+figure.gallery.many{display:grid;grid-template-columns:repeat(auto-fill,minmax(11rem,1fr))}
+figure.gallery.many img{height:auto;width:100%;max-height:26rem}
+figure.gallery.many figcaption{grid-column:1/-1}
+figure.gallery figcaption{flex-basis:100%}
 
 @media (max-width:34rem){
   body{font-size:18px}
   .wrap{padding:2.5rem 1.1rem 4rem}
   h1{font-size:1.9rem}
   .row.n2,.row.n3,.row.n4,figure.row.n2,figure.row.n3{grid-template-columns:1fr}
+  figure.gallery img,figure.gallery.many img{height:auto;width:100%}
 }
 
 .closing{margin-top:3rem;padding-top:1.6rem;border-top:1px solid var(--rule);
@@ -511,9 +515,10 @@ footer a:hover{color:var(--accent);border-bottom-color:var(--accent)}
 <h3>Coda de este movimiento (Epílogo)</h3>
 <p>Unos años después del accidente, con Carlos y Teresa dividimos los campos.</p>
 <p>A Carlos le tocó el Correntino, a Teresa La Frontera en Pehuajó y a mi Nueva Bélgica y Las Tunas Chicas</p>
-<figure class="gallery n2">
-<img src="img/image4.jpg" width="673" height="469" alt="" loading="lazy" style="max-width:min(100%,1076px)">
-<img src="img/image74.jpg" width="685" height="914" alt="" loading="lazy" style="max-width:min(100%,1096px)">
+<figure class="gallery n3">
+<img src="img/acuarela-nueva-belgica.jpg" width="1280" height="633" alt="" loading="lazy">
+<img src="img/image4.jpg" width="673" height="469" alt="" loading="lazy">
+<img src="img/image74.jpg" width="685" height="914" alt="" loading="lazy">
 <figcaption>Fotos Nueva Bélgica y su nuevo viñedo</figcaption>
 </figure>
 <p>Para Carlos El Correntino era también su lugar en el mundo, lo disfrutó muchísimo. Invitaba a un montón de amigos, Javier Eguiguren y su padre eran los que más iban. También Emiliano Greco, su pareja.</p>
@@ -934,7 +939,7 @@ footer a:hover{color:var(--accent);border-bottom-color:var(--accent)}
 <p>Kala, es muy versátil, tiene muy linda voz y una gran creatividad</p>
 <p>Fermín, también músico, misionero, muy cariñoso y empático;</p>
 <p>Tomi, ama las plantas y los autos. Es muy amiguero y también súper cariñoso.</p>
-<figure class="gallery n4">
+<figure class="gallery many n4">
 <img src="img/image109.jpg" width="511" height="341" alt="" loading="lazy" style="max-width:min(100%,817px)">
 <img src="img/image104.jpg" width="344" height="458" alt="" loading="lazy" style="max-width:min(100%,550px)">
 <img src="img/image70.jpg" width="353" height="470" alt="" loading="lazy" style="max-width:min(100%,564px)">
