@@ -148,14 +148,8 @@ footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
     0%{rotate:1.1deg} 30%{rotate:-1.5deg} 55%{rotate:.9deg} 78%{rotate:-.7deg} 100%{rotate:1.1deg}
   }
 
-  /* el petalo se suelta: sale por la punta, gira y se va deshaciendo */
-  .suena .petalo-caja{animation:volar 3.4s cubic-bezier(.3,.05,.5,1) forwards}
-  @keyframes volar{
-    0%{transform:none;opacity:1}
-    12%{transform:translate(0,10px) rotate(-6deg)}
-    100%{transform:translate(var(--dx,40px),var(--dy,-330px)) rotate(var(--giro,80deg));
-         opacity:0}
-  }
+  /* el vuelo y el rearmado de cada petalo van en su propio @keyframes,
+     generados mas abajo: cada uno lleva su horario dentro del ciclo */
 
   /* pausar la musica congela la planta y los petalos en el aire */
   .quieto .planta,.quieto .cabeza,.quieto .petalo-caja{animation-play-state:paused}
@@ -204,32 +198,58 @@ footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
     @keyframes asomar{from{opacity:0;translate:0 1.4rem}}
   }
 }
-.suena .petalo-caja[data-idx="0"]{--dx:-48px;--dy:-278px;--giro:-33deg;animation-delay:7.0s}
-.suena .petalo-caja[data-idx="7"]{--dx:-62px;--dy:-271px;--giro:-31deg;animation-delay:17.9s}
-.suena .petalo-caja[data-idx="14"]{--dx:75px;--dy:-396px;--giro:85deg;animation-delay:28.8s}
-.suena .petalo-caja[data-idx="21"]{--dx:-50px;--dy:-351px;--giro:-71deg;animation-delay:39.8s}
-.suena .petalo-caja[data-idx="2"]{--dx:-59px;--dy:-278px;--giro:-91deg;animation-delay:50.7s}
-.suena .petalo-caja[data-idx="9"]{--dx:77px;--dy:-401px;--giro:98deg;animation-delay:61.6s}
-.suena .petalo-caja[data-idx="16"]{--dx:54px;--dy:-293px;--giro:-61deg;animation-delay:72.5s}
-.suena .petalo-caja[data-idx="23"]{--dx:23px;--dy:-384px;--giro:113deg;animation-delay:83.4s}
-.suena .petalo-caja[data-idx="4"]{--dx:68px;--dy:-275px;--giro:34deg;animation-delay:94.4s}
-.suena .petalo-caja[data-idx="11"]{--dx:31px;--dy:-346px;--giro:-103deg;animation-delay:105.3s}
-.suena .petalo-caja[data-idx="18"]{--dx:-5px;--dy:-275px;--giro:139deg;animation-delay:116.2s}
-.suena .petalo-caja[data-idx="25"]{--dx:66px;--dy:-353px;--giro:-64deg;animation-delay:127.1s}
-.suena .petalo-caja[data-idx="6"]{--dx:74px;--dy:-357px;--giro:122deg;animation-delay:138.0s}
-.suena .petalo-caja[data-idx="13"]{--dx:63px;--dy:-346px;--giro:-28deg;animation-delay:149.0s}
-.suena .petalo-caja[data-idx="20"]{--dx:18px;--dy:-333px;--giro:-108deg;animation-delay:159.9s}
-.suena .petalo-caja[data-idx="1"]{--dx:-35px;--dy:-398px;--giro:-146deg;animation-delay:170.8s}
-.suena .petalo-caja[data-idx="8"]{--dx:-82px;--dy:-366px;--giro:-70deg;animation-delay:181.7s}
-.suena .petalo-caja[data-idx="15"]{--dx:6px;--dy:-340px;--giro:-50deg;animation-delay:192.6s}
-.suena .petalo-caja[data-idx="22"]{--dx:90px;--dy:-293px;--giro:-28deg;animation-delay:203.6s}
-.suena .petalo-caja[data-idx="3"]{--dx:-54px;--dy:-368px;--giro:-72deg;animation-delay:214.5s}
-.suena .petalo-caja[data-idx="10"]{--dx:-26px;--dy:-387px;--giro:-57deg;animation-delay:225.4s}
-.suena .petalo-caja[data-idx="17"]{--dx:11px;--dy:-414px;--giro:-128deg;animation-delay:236.3s}
-.suena .petalo-caja[data-idx="24"]{--dx:-79px;--dy:-299px;--giro:85deg;animation-delay:247.2s}
-.suena .petalo-caja[data-idx="5"]{--dx:21px;--dy:-300px;--giro:-54deg;animation-delay:258.2s}
-.suena .petalo-caja[data-idx="12"]{--dx:-58px;--dy:-338px;--giro:-146deg;animation-delay:269.1s}
-.suena .petalo-caja[data-idx="19"]{--dx:36px;--dy:-412px;--giro:146deg;animation-delay:280.0s}</style>
+@keyframes ciclo-0{0%,3.333%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}5.6%{transform:translate(-48px,-278px) rotate(-33deg);opacity:0;animation-timing-function:linear}85.333%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}86.2%,100%{transform:none;opacity:1}}
+@keyframes ciclo-7{0%,6.4%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}8.667%{transform:translate(-62px,-271px) rotate(-31deg);opacity:0;animation-timing-function:linear}86.213%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}87.08%,100%{transform:none;opacity:1}}
+@keyframes ciclo-14{0%,9.467%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}11.733%{transform:translate(75px,-396px) rotate(85deg);opacity:0;animation-timing-function:linear}87.093%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}87.96%,100%{transform:none;opacity:1}}
+@keyframes ciclo-21{0%,12.533%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}14.8%{transform:translate(-50px,-351px) rotate(-71deg);opacity:0;animation-timing-function:linear}87.973%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}88.84%,100%{transform:none;opacity:1}}
+@keyframes ciclo-2{0%,15.6%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}17.867%{transform:translate(-59px,-278px) rotate(-91deg);opacity:0;animation-timing-function:linear}88.853%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}89.72%,100%{transform:none;opacity:1}}
+@keyframes ciclo-9{0%,18.667%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}20.933%{transform:translate(77px,-401px) rotate(98deg);opacity:0;animation-timing-function:linear}89.733%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}90.6%,100%{transform:none;opacity:1}}
+@keyframes ciclo-16{0%,21.733%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}24.0%{transform:translate(54px,-293px) rotate(-61deg);opacity:0;animation-timing-function:linear}90.613%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}91.48%,100%{transform:none;opacity:1}}
+@keyframes ciclo-23{0%,24.8%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}27.067%{transform:translate(23px,-384px) rotate(113deg);opacity:0;animation-timing-function:linear}91.493%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}92.36%,100%{transform:none;opacity:1}}
+@keyframes ciclo-4{0%,27.867%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}30.133%{transform:translate(68px,-275px) rotate(34deg);opacity:0;animation-timing-function:linear}92.373%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}93.24%,100%{transform:none;opacity:1}}
+@keyframes ciclo-11{0%,30.933%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}33.2%{transform:translate(31px,-346px) rotate(-103deg);opacity:0;animation-timing-function:linear}85.627%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}86.493%,100%{transform:none;opacity:1}}
+@keyframes ciclo-18{0%,34.0%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}36.267%{transform:translate(-5px,-275px) rotate(139deg);opacity:0;animation-timing-function:linear}86.507%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}87.373%,100%{transform:none;opacity:1}}
+@keyframes ciclo-25{0%,37.067%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}39.333%{transform:translate(66px,-353px) rotate(-64deg);opacity:0;animation-timing-function:linear}87.387%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}88.253%,100%{transform:none;opacity:1}}
+@keyframes ciclo-6{0%,40.133%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}42.4%{transform:translate(74px,-357px) rotate(122deg);opacity:0;animation-timing-function:linear}88.267%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}89.133%,100%{transform:none;opacity:1}}
+@keyframes ciclo-13{0%,43.2%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}45.467%{transform:translate(63px,-346px) rotate(-28deg);opacity:0;animation-timing-function:linear}89.147%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}90.013%,100%{transform:none;opacity:1}}
+@keyframes ciclo-20{0%,46.267%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}48.533%{transform:translate(18px,-333px) rotate(-108deg);opacity:0;animation-timing-function:linear}90.027%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}90.893%,100%{transform:none;opacity:1}}
+@keyframes ciclo-1{0%,49.333%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}51.6%{transform:translate(-35px,-398px) rotate(-146deg);opacity:0;animation-timing-function:linear}90.907%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}91.773%,100%{transform:none;opacity:1}}
+@keyframes ciclo-8{0%,52.4%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}54.667%{transform:translate(-82px,-366px) rotate(-70deg);opacity:0;animation-timing-function:linear}91.787%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}92.653%,100%{transform:none;opacity:1}}
+@keyframes ciclo-15{0%,55.467%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}57.733%{transform:translate(6px,-340px) rotate(-50deg);opacity:0;animation-timing-function:linear}92.667%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}93.533%,100%{transform:none;opacity:1}}
+@keyframes ciclo-22{0%,58.533%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}60.8%{transform:translate(90px,-293px) rotate(-28deg);opacity:0;animation-timing-function:linear}85.92%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}86.787%,100%{transform:none;opacity:1}}
+@keyframes ciclo-3{0%,61.6%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}63.867%{transform:translate(-54px,-368px) rotate(-72deg);opacity:0;animation-timing-function:linear}86.8%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}87.667%,100%{transform:none;opacity:1}}
+@keyframes ciclo-10{0%,64.667%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}66.933%{transform:translate(-26px,-387px) rotate(-57deg);opacity:0;animation-timing-function:linear}87.68%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}88.547%,100%{transform:none;opacity:1}}
+@keyframes ciclo-17{0%,67.733%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}70.0%{transform:translate(11px,-414px) rotate(-128deg);opacity:0;animation-timing-function:linear}88.56%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}89.427%,100%{transform:none;opacity:1}}
+@keyframes ciclo-24{0%,70.8%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}73.067%{transform:translate(-79px,-299px) rotate(85deg);opacity:0;animation-timing-function:linear}89.44%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}90.307%,100%{transform:none;opacity:1}}
+@keyframes ciclo-5{0%,73.867%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}76.133%{transform:translate(21px,-300px) rotate(-54deg);opacity:0;animation-timing-function:linear}90.32%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}91.187%,100%{transform:none;opacity:1}}
+@keyframes ciclo-12{0%,76.933%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}79.2%{transform:translate(-58px,-338px) rotate(-146deg);opacity:0;animation-timing-function:linear}91.2%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}92.067%,100%{transform:none;opacity:1}}
+@keyframes ciclo-19{0%,80.0%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.3,.05,.5,1)}82.267%{transform:translate(36px,-412px) rotate(146deg);opacity:0;animation-timing-function:linear}92.08%{transform:scale(.14);opacity:0;animation-timing-function:cubic-bezier(.22,.61,.36,1)}92.947%,100%{transform:none;opacity:1}}
+.suena .petalo-caja[data-idx="0"]{animation:ciclo-0 150s linear infinite}
+.suena .petalo-caja[data-idx="7"]{animation:ciclo-7 150s linear infinite}
+.suena .petalo-caja[data-idx="14"]{animation:ciclo-14 150s linear infinite}
+.suena .petalo-caja[data-idx="21"]{animation:ciclo-21 150s linear infinite}
+.suena .petalo-caja[data-idx="2"]{animation:ciclo-2 150s linear infinite}
+.suena .petalo-caja[data-idx="9"]{animation:ciclo-9 150s linear infinite}
+.suena .petalo-caja[data-idx="16"]{animation:ciclo-16 150s linear infinite}
+.suena .petalo-caja[data-idx="23"]{animation:ciclo-23 150s linear infinite}
+.suena .petalo-caja[data-idx="4"]{animation:ciclo-4 150s linear infinite}
+.suena .petalo-caja[data-idx="11"]{animation:ciclo-11 150s linear infinite}
+.suena .petalo-caja[data-idx="18"]{animation:ciclo-18 150s linear infinite}
+.suena .petalo-caja[data-idx="25"]{animation:ciclo-25 150s linear infinite}
+.suena .petalo-caja[data-idx="6"]{animation:ciclo-6 150s linear infinite}
+.suena .petalo-caja[data-idx="13"]{animation:ciclo-13 150s linear infinite}
+.suena .petalo-caja[data-idx="20"]{animation:ciclo-20 150s linear infinite}
+.suena .petalo-caja[data-idx="1"]{animation:ciclo-1 150s linear infinite}
+.suena .petalo-caja[data-idx="8"]{animation:ciclo-8 150s linear infinite}
+.suena .petalo-caja[data-idx="15"]{animation:ciclo-15 150s linear infinite}
+.suena .petalo-caja[data-idx="22"]{animation:ciclo-22 150s linear infinite}
+.suena .petalo-caja[data-idx="3"]{animation:ciclo-3 150s linear infinite}
+.suena .petalo-caja[data-idx="10"]{animation:ciclo-10 150s linear infinite}
+.suena .petalo-caja[data-idx="17"]{animation:ciclo-17 150s linear infinite}
+.suena .petalo-caja[data-idx="24"]{animation:ciclo-24 150s linear infinite}
+.suena .petalo-caja[data-idx="5"]{animation:ciclo-5 150s linear infinite}
+.suena .petalo-caja[data-idx="12"]{animation:ciclo-12 150s linear infinite}
+.suena .petalo-caja[data-idx="19"]{animation:ciclo-19 150s linear infinite}</style>
 </head>
 <body>
 <div class="papel" aria-hidden="true"></div>

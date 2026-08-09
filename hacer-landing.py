@@ -44,25 +44,47 @@ for k in range(26):
 granos = '\n        '.join(granos)
 
 
-# Deshojado: 26 petalos repartidos a lo largo de los 5:06 de grabacion, en un
-# orden salteado (paso 7 sobre 26, que son coprimos, asi recorre toda la corona
-# sin repetir y sin caer en vecinos consecutivos). Cada uno se lleva su rumbo
-# y su giro, para que no vuelen todos igual.
-DURACION = 306.0
-INICIO_VIENTO = 7.0
-ULTIMO = DURACION - 26.0
+# Ciclo de la flor: se deshoja, queda desnuda un momento, se rearma y vuelve a
+# empezar. Una sola animacion infinita por petalo, con su propio calendario
+# metido en los fotogramas; asi pausar la musica la congela y no hay que
+# coordinar nada desde JavaScript.
+#
+#   0 s ..... 5 s   entera
+#   5 .. 120 s      se sueltan de a uno (uno cada 4.6 s, en orden salteado)
+# 123 .. 128 s      desnuda
+# 128 .. 139 s      vuelven de a uno, brotando desde el centro
+# 139 .. 150 s      entera otra vez, y arranca de nuevo
+CICLO = 150.0
 TOTAL_PETALOS = N * 2
+CAIDA_INI, CAIDA_FIN, VUELO = 5.0, 120.0, 3.4
+REARMADO_INI, REARMADO_FIN, BROTE = 128.0, 139.0, 1.3
+
 import random
 az = random.Random(4)
-vuelos = []
+pct = lambda t: round(t / CICLO * 100, 3)
+
+bloques, asignaciones = [], []
 for k in range(TOTAL_PETALOS):
-    idx = (k * 7) % TOTAL_PETALOS
-    t = INICIO_VIENTO + (ULTIMO - INICIO_VIENTO) * (k / (TOTAL_PETALOS - 1))
-    vuelos.append((idx, t, az.uniform(-90, 90), az.uniform(-260, -430), az.uniform(-160, 160)))
-vuelo_css = '\n'.join(
-    f'.suena .petalo-caja[data-idx="{i}"]{{--dx:{dx:.0f}px;--dy:{dy:.0f}px;'
-    f'--giro:{g:.0f}deg;animation-delay:{t:.1f}s}}'
-    for i, t, dx, dy, g in vuelos)
+    idx = (k * 7) % TOTAL_PETALOS          # 7 y 26 son coprimos: recorre todos
+    j = [(m * 11) % TOTAL_PETALOS for m in range(TOTAL_PETALOS)].index(idx)
+    cae = CAIDA_INI + k * (CAIDA_FIN - CAIDA_INI) / (TOTAL_PETALOS - 1)
+    vuelve = REARMADO_INI + j * (REARMADO_FIN - REARMADO_INI) / (TOTAL_PETALOS - 1)
+    dx, dy = az.uniform(-90, 90), az.uniform(-260, -430)
+    giro = az.uniform(-160, 160)
+    bloques.append(
+        f'@keyframes ciclo-{idx}{{'
+        f'0%,{pct(cae)}%{{transform:none;opacity:1;'
+        f'animation-timing-function:cubic-bezier(.3,.05,.5,1)}}'
+        f'{pct(cae + VUELO)}%{{transform:translate({dx:.0f}px,{dy:.0f}px) '
+        f'rotate({giro:.0f}deg);opacity:0;animation-timing-function:linear}}'
+        f'{pct(vuelve)}%{{transform:scale(.14);opacity:0;'
+        f'animation-timing-function:cubic-bezier(.22,.61,.36,1)}}'
+        f'{pct(vuelve + BROTE)}%,100%{{transform:none;opacity:1}}}}')
+    asignaciones.append(
+        f'.suena .petalo-caja[data-idx="{idx}"]'
+        f'{{animation:ciclo-{idx} {CICLO:.0f}s linear infinite}}')
+
+vuelo_css = '\n'.join(bloques + asignaciones)
 
 CSS = """
 :root{
@@ -196,14 +218,8 @@ footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
     0%{rotate:1.1deg} 30%{rotate:-1.5deg} 55%{rotate:.9deg} 78%{rotate:-.7deg} 100%{rotate:1.1deg}
   }
 
-  /* el petalo se suelta: sale por la punta, gira y se va deshaciendo */
-  .suena .petalo-caja{animation:volar 3.4s cubic-bezier(.3,.05,.5,1) forwards}
-  @keyframes volar{
-    0%{transform:none;opacity:1}
-    12%{transform:translate(0,10px) rotate(-6deg)}
-    100%{transform:translate(var(--dx,40px),var(--dy,-330px)) rotate(var(--giro,80deg));
-         opacity:0}
-  }
+  /* el vuelo y el rearmado de cada petalo van en su propio @keyframes,
+     generados mas abajo: cada uno lleva su horario dentro del ciclo */
 
   /* pausar la musica congela la planta y los petalos en el aire */
   .quieto .planta,.quieto .cabeza,.quieto .petalo-caja{animation-play-state:paused}
