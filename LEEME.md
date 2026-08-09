@@ -5,8 +5,11 @@
 
 El sitio tiene dos piezas:
 
-- `index.html` en la raíz: la **landing** de Margarita Sastre Inchauspe, con la
-  acuarela animada y el acceso al libro.
+- `index.html` en la raíz: la **landing**, con la margarita en acuarela que se
+  abre sola, la grabación al piano y el acceso al libro. La genera
+  `hacer-landing.py` (los 26 pétalos se emiten por código, no a mano).
+- `audio/`: la grabación, en AAC (5 MB, la que suena) y el MP3 original de
+  320 kbps (12 MB, respaldo para navegadores viejos).
 - `pequenas-composiciones/`: el **libro** completo.
 
 Cuando se compre `margaritasastre.com` y se apunte al repo, las direcciones

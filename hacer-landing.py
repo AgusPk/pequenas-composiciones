@@ -1,22 +1,46 @@
-<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Margarita Sastre Inchauspe</title>
-<meta name="description" content="Los escritos y el piano de Margarita Sastre Inchauspe. Pequeñas composiciones de una niña: una vida contada en veintitrés movimientos.">
-<meta name="author" content="Margarita Sastre Inchauspe">
-<meta name="color-scheme" content="light dark">
-<link rel="canonical" href="https://aguspk.github.io/pequenas-composiciones/">
-<meta property="og:type" content="website">
-<meta property="og:locale" content="es_AR">
-<meta property="og:title" content="Margarita Sastre Inchauspe">
-<meta property="og:description" content="Los escritos y el piano de Margarita Sastre Inchauspe.">
-<meta property="og:url" content="https://aguspk.github.io/pequenas-composiciones/">
-<meta property="og:image" content="https://aguspk.github.io/pequenas-composiciones/pequenas-composiciones/og.jpg">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%BC%3C/text%3E%3C/svg%3E">
-<style>
+# -*- coding: utf-8 -*-
+"""Genera la landing: papel de acuarela, una margarita que se abre, y el piano."""
+import io, os
+
+CX, CY = 300, 288          # centro de la flor, en unidades del viewBox
+
+# Un petalo apuntando hacia arriba; despues cada uno se rota a su lugar.
+PETALO_FRENTE = ('M 300 240 C 278 211, 272 168, 286 130 '
+                 'C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z')
+PETALO_FONDO  = ('M 300 243 C 275 214, 266 174, 283 142 '
+                 'C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z')
+
+def anillo(n, path, clase, paso_grados, giro_inicial, retardo_base, salto):
+    """Devuelve el markup de un anillo de petalos, cada uno con su retardo."""
+    out = []
+    for i in range(n):
+        ang = giro_inicial + i * paso_grados
+        # el orden de aparicion alterna a los costados: queda mas natural que en fila
+        orden = (i * 5) % n
+        retardo = retardo_base + orden * salto
+        out.append(
+            f'<path class="petalo {clase}" d="{path}" '
+            f'transform="rotate({ang:.1f})" '
+            f'style="animation-delay:{retardo:.2f}s"/>')
+    return '\n        '.join(out)
+
+N = 13
+petalos_fondo  = anillo(N, PETALO_FONDO,  'atras',  360/N, 360/(2*N), 1.30, 0.045)
+petalos_frente = anillo(N, PETALO_FRENTE, 'adelante', 360/N, 0,        1.60, 0.045)
+
+# granulado del boton: el pigmento de acuarela se junta en grumos
+import math
+granos = []
+for k in range(26):
+    a = k * 2.399963           # angulo aureo, reparte parejo sin verse en filas
+    r = 6 + 32 * math.sqrt(k / 26)
+    gx = CX + r * math.cos(a)
+    gy = CY + r * math.sin(a)
+    rr = 1.6 + (k % 4) * 0.7
+    granos.append(f'<circle cx="{gx:.1f}" cy="{gy:.1f}" r="{rr:.1f}" fill="#9a6b1f" opacity=".30"/>')
+granos = '\n        '.join(granos)
+
+CSS = """
 :root{
   --tinta:#2a2620; --suave:#6d6555; --linea:#ddd3bd; --acento:#8a6634;
   --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
@@ -169,7 +193,61 @@ footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
     @keyframes asomar{from{opacity:0;translate:0 1.4rem}}
   }
 }
-</style>
+"""
+
+JS = """
+(function(){
+  var au = document.getElementById('piano');
+  var btn = document.querySelector('.tocar');
+  var rango = document.querySelector('.barra input');
+  var transcurrido = document.querySelector('.transcurrido');
+  var total = document.querySelector('.total');
+  if(!au || !btn) return;
+
+  function reloj(s){
+    if(!isFinite(s)) return '--:--';
+    var m = Math.floor(s/60), r = Math.floor(s%60);
+    return m + ':' + (r<10?'0':'') + r;
+  }
+  btn.addEventListener('click', function(){
+    if(au.paused){ au.play(); } else { au.pause(); }
+  });
+  au.addEventListener('play',  function(){ btn.setAttribute('aria-pressed','true');
+    btn.setAttribute('aria-label','Pausar'); });
+  au.addEventListener('pause', function(){ btn.setAttribute('aria-pressed','false');
+    btn.setAttribute('aria-label','Escuchar'); });
+  au.addEventListener('loadedmetadata', function(){
+    rango.max = au.duration; total.textContent = reloj(au.duration);
+  });
+  au.addEventListener('timeupdate', function(){
+    if(!rango.matches(':active')) rango.value = au.currentTime;
+    transcurrido.textContent = reloj(au.currentTime);
+    rango.setAttribute('aria-valuetext', reloj(au.currentTime));
+  });
+  rango.addEventListener('input', function(){ au.currentTime = +rango.value; });
+  au.addEventListener('ended', function(){ rango.value = 0; });
+})();
+"""
+
+HTML = """<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Margarita Sastre Inchauspe</title>
+<meta name="description" content="Los escritos y el piano de Margarita Sastre Inchauspe. Pequenas composiciones de una nina: una vida contada en veintitres movimientos.">
+<meta name="author" content="Margarita Sastre Inchauspe">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="__SITIO__">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:title" content="Margarita Sastre Inchauspe">
+<meta property="og:description" content="Los escritos y el piano de Margarita Sastre Inchauspe.">
+<meta property="og:url" content="__SITIO__">
+<meta property="og:image" content="__SITIO__pequenas-composiciones/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%BC%3C/text%3E%3C/svg%3E">
+<style>__CSS__</style>
 </head>
 <body>
 <div class="papel" aria-hidden="true"></div>
@@ -179,7 +257,7 @@ footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
   <div class="presentacion">
     <h1 class="nombre">Margarita Sastre<br>Inchauspe</h1>
     <div class="filete"></div>
-    <p class="lema">Una vida entre pianos, campos y amigas, contada mientras le hacían las manos.</p>
+    <p class="lema">Una vida entre pianos, campos y amigas, contada mientras le hacian las manos.</p>
 
     <div class="piano">
       <p class="rotulo-piano">Margarita al piano</p>
@@ -196,7 +274,7 @@ footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
           <p class="titulo">Beethoven &middot; Sonata n.&ordm;&nbsp;7, primer movimiento</p>
           <div class="barra">
             <input type="range" min="0" max="100" value="0" step="0.5"
-                   aria-label="Posición de la grabación">
+                   aria-label="Posicion de la grabacion">
             <span class="reloj"><span class="transcurrido">0:00</span> / <span class="total">5:06</span></span>
           </div>
         </div>
@@ -210,7 +288,7 @@ footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
 
   <div class="flor-caja">
     <svg class="flor" viewBox="0 0 600 800" role="img"
-         aria-label="Acuarela de una margarita abriéndose sobre papel">
+         aria-label="Acuarela de una margarita abriendose sobre papel">
       <defs>
         <filter id="acuarela" x="-30%" y="-30%" width="160%" height="160%">
           <feTurbulence type="fractalNoise" baseFrequency="0.024" numOctaves="4" seed="11" result="r"/>
@@ -271,65 +349,16 @@ footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
 
       <!-- los petalos: primero el anillo de atras, despues el de adelante -->
       <g filter="url(#acuarela-fina)">
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(13.8)" style="animation-delay:1.30s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(41.5)" style="animation-delay:1.52s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(69.2)" style="animation-delay:1.75s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(96.9)" style="animation-delay:1.39s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(124.6)" style="animation-delay:1.61s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(152.3)" style="animation-delay:1.84s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(180.0)" style="animation-delay:1.48s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(207.7)" style="animation-delay:1.71s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(235.4)" style="animation-delay:1.34s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(263.1)" style="animation-delay:1.57s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(290.8)" style="animation-delay:1.79s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(318.5)" style="animation-delay:1.44s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(346.2)" style="animation-delay:1.66s"/>
+        __PETALOS_FONDO__
       </g>
       <g filter="url(#acuarela-fina)">
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(0.0)" style="animation-delay:1.60s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(27.7)" style="animation-delay:1.83s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(55.4)" style="animation-delay:2.05s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(83.1)" style="animation-delay:1.69s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(110.8)" style="animation-delay:1.92s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(138.5)" style="animation-delay:2.14s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(166.2)" style="animation-delay:1.78s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(193.8)" style="animation-delay:2.00s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(221.5)" style="animation-delay:1.65s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(249.2)" style="animation-delay:1.87s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(276.9)" style="animation-delay:2.10s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(304.6)" style="animation-delay:1.74s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(332.3)" style="animation-delay:1.96s"/>
+        __PETALOS_FRENTE__
       </g>
 
       <!-- el boton, con el granulado del pigmento -->
       <g class="boton-flor" filter="url(#acuarela-fina)">
         <circle cx="300" cy="288" r="52" fill="url(#boton)"/>
-        <circle cx="306.0" cy="288.0" r="1.6" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="290.9" cy="296.3" r="2.3" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="301.3" cy="273.2" r="3.0" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="310.3" cy="301.4" r="3.7" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="281.7" cy="284.8" r="1.6" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="316.9" cy="277.2" r="2.3" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="294.5" cy="308.6" r="3.0" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="289.6" cy="267.9" r="3.7" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="322.3" cy="296.1" r="1.6" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="277.1" cy="297.5" r="2.3" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="311.0" cy="264.6" r="3.0" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="308.0" cy="313.6" r="3.7" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="276.0" cy="274.1" r="1.6" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="328.0" cy="281.9" r="2.3" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="283.0" cy="312.1" r="3.0" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="296.1" cy="257.9" r="3.7" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="323.8" cy="308.0" r="1.6" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="268.2" cy="289.3" r="2.3" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="323.1" cy="265.0" r="3.0" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="298.5" cy="321.3" r="3.7" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="278.2" cy="261.8" r="1.6" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="334.4" cy="292.6" r="2.3" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="270.9" cy="308.2" r="3.0" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="307.9" cy="252.8" r="3.7" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="318.3" cy="319.9" r="1.6" fill="#9a6b1f" opacity=".30"/>
-        <circle cx="264.4" cy="276.6" r="2.3" fill="#9a6b1f" opacity=".30"/>
+        __GRANOS__
       </g>
 
       <!-- salpicaduras sueltas, como en el papel de verdad -->
@@ -352,8 +381,8 @@ footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
   <a class="obra" href="pequenas-composiciones/">
     <img src="pequenas-composiciones/img/image102.jpg" width="655" height="673" alt="" loading="lazy">
     <div>
-      <h2>Pequeñas composiciones de una niña</h2>
-      <p class="bajada">Sus memorias, en veintitrés movimientos: la infancia entre pianos,
+      <h2>Pequenas composiciones de una nina</h2>
+      <p class="bajada">Sus memorias, en veintitres movimientos: la infancia entre pianos,
         El Correntino, la familia, los amigos y una vida entera. Con 121 fotos.</p>
       <span class="entrar">Leer el libro <span class="flecha">&rarr;</span></span>
     </div>
@@ -363,38 +392,31 @@ footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
 <footer><p>Buenos Aires &middot; 2026</p></footer>
 </div>
 
-<script>
-(function(){
-  var au = document.getElementById('piano');
-  var btn = document.querySelector('.tocar');
-  var rango = document.querySelector('.barra input');
-  var transcurrido = document.querySelector('.transcurrido');
-  var total = document.querySelector('.total');
-  if(!au || !btn) return;
-
-  function reloj(s){
-    if(!isFinite(s)) return '--:--';
-    var m = Math.floor(s/60), r = Math.floor(s%60);
-    return m + ':' + (r<10?'0':'') + r;
-  }
-  btn.addEventListener('click', function(){
-    if(au.paused){ au.play(); } else { au.pause(); }
-  });
-  au.addEventListener('play',  function(){ btn.setAttribute('aria-pressed','true');
-    btn.setAttribute('aria-label','Pausar'); });
-  au.addEventListener('pause', function(){ btn.setAttribute('aria-pressed','false');
-    btn.setAttribute('aria-label','Escuchar'); });
-  au.addEventListener('loadedmetadata', function(){
-    rango.max = au.duration; total.textContent = reloj(au.duration);
-  });
-  au.addEventListener('timeupdate', function(){
-    if(!rango.matches(':active')) rango.value = au.currentTime;
-    transcurrido.textContent = reloj(au.currentTime);
-    rango.setAttribute('aria-valuetext', reloj(au.currentTime));
-  });
-  rango.addEventListener('input', function(){ au.currentTime = +rango.value; });
-  au.addEventListener('ended', function(){ rango.value = 0; });
-})();
-</script>
+<script>__JS__</script>
 </body>
 </html>
+"""
+
+SITIO = os.environ.get('SITE_URL', 'https://aguspk.github.io/pequenas-composiciones/')
+salida = (HTML
+          .replace('__CSS__', CSS)
+          .replace('__JS__', JS)
+          .replace('__PETALOS_FONDO__', petalos_fondo)
+          .replace('__PETALOS_FRENTE__', petalos_frente)
+          .replace('__GRANOS__', granos)
+          .replace('__SITIO__', SITIO))
+
+# el archivo se escribe en utf-8 con los acentos correctos
+salida = (salida
+  .replace('Pequenas composiciones de una nina', 'Pequeñas composiciones de una niña')
+  .replace('veintitres', 'veintitrés')
+  .replace('hacian las manos', 'hacían las manos')
+  .replace('Posicion de la grabacion', 'Posición de la grabación')
+  .replace('abriendose', 'abriéndose')
+  .replace('escritos y el piano', 'escritos y el piano'))
+
+destino = '/Users/agustin/Personal/pequenas-composiciones/index.html'
+with io.open(destino, 'w', encoding='utf-8') as f:
+    f.write(salida)
+print('landing escrita:', destino, len(salida), 'bytes')
+print('petalos:', N*2, ' granos:', 26)
