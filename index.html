@@ -21,10 +21,13 @@
   --tinta:#2a2620; --suave:#6d6555; --linea:#ddd3bd; --acento:#8a6634;
   --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
-  --papel:#f4efe2; --tarjeta:rgba(255,253,247,.62);
+  --papel:#f4efe2; --tarjeta:rgba(255,253,247,.62); --vidrio:rgba(255,255,255,.5);
 }
 @media (prefers-color-scheme:dark){
-  :root{--tinta:#ece7db; --suave:#a9a294; --linea:#3a3830; --acento:#cfa869;}
+  :root{--tinta:#ece7db; --suave:#a9a294; --linea:#3a3830; --acento:#cfa869;
+        /* la tarjeta tiene que oscurecerse con el papel: un panel claro con
+           texto claro encima dejaba el titulo en contraste 1.98 */
+        --tarjeta:rgba(42,45,38,.72); --vidrio:rgba(255,255,255,.06);}
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -54,8 +57,8 @@ body{margin:0;background:var(--papel);color:var(--tinta);
 .hoja{position:relative;z-index:1}
 
 /* ------------------------------------------------------------------ cuadro */
-.portada{min-height:100svh;display:grid;grid-template-columns:1fr;
-  align-content:center;gap:1rem;max-width:70rem;margin:0 auto;padding:3rem 1.5rem 3.5rem}
+.portada{min-height:86svh;display:grid;grid-template-columns:1fr;
+  align-content:center;gap:1rem;max-width:70rem;margin:0 auto;padding:2.5rem 1.5rem 2rem}
 @media (min-width:58rem){
   .portada{grid-template-columns:1fr 1fr;align-items:center;gap:3rem;padding-block:3rem}
 }
@@ -70,6 +73,14 @@ body{margin:0;background:var(--papel);color:var(--tinta);
 .lema{margin:0 0 2rem;color:var(--suave);font-size:1.1rem;font-style:italic;max-width:26rem}
 
 /* ------------------------------------------------------------------ piano */
+.ir-al-libro{display:inline-flex;align-items:baseline;gap:.45rem;margin:0 0 1.6rem;
+  font-size:1.05rem;color:var(--tinta);text-decoration:none;
+  border-bottom:1px solid var(--acento);padding-bottom:.15rem;
+  transition:color .2s ease, border-color .2s ease}
+.ir-al-libro em{font-style:italic}
+.ir-al-libro:hover{color:var(--acento)}
+.ir-al-libro:hover .flecha{transform:translateX(3px)}
+
 .piano{max-width:24rem;padding:1rem 1.15rem;border:1px solid var(--linea);
   border-radius:12px;background:var(--tarjeta);
   -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
@@ -77,10 +88,10 @@ body{margin:0;background:var(--papel);color:var(--tinta);
   text-transform:uppercase;color:var(--suave);margin:0 0 .55rem}
 .mando{display:flex;align-items:center;gap:.8rem}
 .tocar{flex:none;width:2.9rem;height:2.9rem;border-radius:50%;
-  border:1px solid var(--linea);background:rgba(255,255,255,.5);color:var(--acento);
+  border:1px solid var(--linea);background:var(--vidrio);color:var(--acento);
   display:grid;place-items:center;cursor:pointer;
   transition:border-color .2s ease, color .2s ease, background-color .2s ease}
-.tocar:hover{border-color:var(--acento);background:rgba(255,255,255,.85)}
+.tocar:hover{border-color:var(--acento);background:var(--vidrio);filter:brightness(1.12)}
 .tocar svg{width:1.05rem;height:1.05rem}
 .tocar .pausa{display:none}
 .tocar[aria-pressed="true"] .play{display:none}
@@ -102,7 +113,7 @@ body{margin:0;background:var(--papel);color:var(--tinta);
   font-variant-numeric:tabular-nums;flex:none}
 
 /* ------------------------------------------------------------------ obras */
-.obras{max-width:70rem;margin:0 auto;padding:0 1.5rem 5rem}
+.obras{max-width:70rem;margin:0 auto;padding:0 1.5rem 5rem;scroll-margin-top:1.5rem}
 .rotulo{font-family:var(--sans);font-size:.75rem;letter-spacing:.16em;
   text-transform:uppercase;color:var(--suave);margin:0 0 1.1rem}
 .obra{display:grid;gap:1.5rem;align-items:center;padding:1.5rem;
@@ -190,7 +201,8 @@ footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
   .presentacion>*:nth-child(1){animation-delay:2.75s}
   .presentacion>*:nth-child(2){animation-delay:2.88s}
   .presentacion>*:nth-child(3){animation-delay:3.0s}
-  .presentacion>*:nth-child(4){animation-delay:3.15s}
+  .presentacion>*:nth-child(4){animation-delay:3.12s}
+  .presentacion>*:nth-child(5){animation-delay:3.24s}
 
   @supports ((animation-timeline: view()) and (animation-range: entry)){
     .obras .obra{animation:asomar auto linear backwards;
@@ -260,6 +272,9 @@ footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
     <h1 class="nombre">Margarita Sastre<br>Inchauspe</h1>
     <div class="filete"></div>
     <p class="lema">Una vida entre pianos, campos y amigas, contada mientras le hacían las manos.</p>
+
+    <a class="ir-al-libro" href="pequenas-composiciones/">
+      Leer <em>Pequeñas composiciones de una niña</em> <span class="flecha">&rarr;</span></a>
 
     <div class="piano">
       <p class="rotulo-piano">Margarita al piano</p>
