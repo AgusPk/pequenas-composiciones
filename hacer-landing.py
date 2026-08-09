@@ -10,23 +10,26 @@ PETALO_FRENTE = ('M 300 240 C 278 211, 272 168, 286 130 '
 PETALO_FONDO  = ('M 300 243 C 275 214, 266 174, 283 142 '
                  'C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z')
 
-def anillo(n, path, clase, paso_grados, giro_inicial, retardo_base, salto):
-    """Devuelve el markup de un anillo de petalos, cada uno con su retardo."""
+def anillo(n, path, clase, paso_grados, giro_inicial, retardo_base, salto, base_idx):
+    """Un anillo de petalos. Cada uno va dentro de su caja: la caja lleva el
+    giro que lo ubica en la corona y, cuando suena la musica, el vuelo; el
+    path de adentro solo se ocupa de abrirse al cargar. Separarlos evita que
+    las dos animaciones se peleen por el mismo transform."""
     out = []
     for i in range(n):
         ang = giro_inicial + i * paso_grados
-        # el orden de aparicion alterna a los costados: queda mas natural que en fila
-        orden = (i * 5) % n
+        orden = (i * 5) % n                      # abre salteado, no en fila
         retardo = retardo_base + orden * salto
         out.append(
+            f'<g class="petalo-caja" data-idx="{base_idx + i}" '
+            f'style="--ang:{ang:.1f}deg">'
             f'<path class="petalo {clase}" d="{path}" '
-            f'transform="rotate({ang:.1f})" '
-            f'style="animation-delay:{retardo:.2f}s"/>')
+            f'style="animation-delay:{retardo:.2f}s"/></g>')
     return '\n        '.join(out)
 
 N = 13
-petalos_fondo  = anillo(N, PETALO_FONDO,  'atras',  360/N, 360/(2*N), 1.30, 0.045)
-petalos_frente = anillo(N, PETALO_FRENTE, 'adelante', 360/N, 0,        1.60, 0.045)
+petalos_fondo  = anillo(N, PETALO_FONDO,  'atras',  360/N, 360/(2*N), 1.30, 0.045, 0)
+petalos_frente = anillo(N, PETALO_FRENTE, 'adelante', 360/N, 0,        1.60, 0.045, N)
 
 # granulado del boton: el pigmento de acuarela se junta en grumos
 import math
@@ -39,6 +42,27 @@ for k in range(26):
     rr = 1.6 + (k % 4) * 0.7
     granos.append(f'<circle cx="{gx:.1f}" cy="{gy:.1f}" r="{rr:.1f}" fill="#9a6b1f" opacity=".30"/>')
 granos = '\n        '.join(granos)
+
+
+# Deshojado: 26 petalos repartidos a lo largo de los 5:06 de grabacion, en un
+# orden salteado (paso 7 sobre 26, que son coprimos, asi recorre toda la corona
+# sin repetir y sin caer en vecinos consecutivos). Cada uno se lleva su rumbo
+# y su giro, para que no vuelen todos igual.
+DURACION = 306.0
+INICIO_VIENTO = 7.0
+ULTIMO = DURACION - 26.0
+TOTAL_PETALOS = N * 2
+import random
+az = random.Random(4)
+vuelos = []
+for k in range(TOTAL_PETALOS):
+    idx = (k * 7) % TOTAL_PETALOS
+    t = INICIO_VIENTO + (ULTIMO - INICIO_VIENTO) * (k / (TOTAL_PETALOS - 1))
+    vuelos.append((idx, t, az.uniform(-90, 90), az.uniform(-260, -430), az.uniform(-160, 160)))
+vuelo_css = '\n'.join(
+    f'.suena .petalo-caja[data-idx="{i}"]{{--dx:{dx:.0f}px;--dy:{dy:.0f}px;'
+    f'--giro:{g:.0f}deg;animation-delay:{t:.1f}s}}'
+    for i, t, dx, dy, g in vuelos)
 
 CSS = """
 :root{
@@ -150,6 +174,41 @@ footer{max-width:70rem;margin:0 auto;padding:0 1.5rem 4rem;
   font-family:var(--sans);font-size:.8rem;color:var(--suave)}
 footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
 
+
+/* --------------------------------------------------- viento, con la musica */
+/* Todo esto solo existe cuando suena: .suena prende las animaciones y .quieto
+   las congela donde estan, asi pausar la musica frena la planta en seco y
+   retomarla sigue desde ahi. Al terminar se saca .suena y la flor vuelve
+   entera, lista para la proxima escucha. */
+.petalo-caja{transform-box:view-box;transform-origin:300px 288px;rotate:var(--ang)}
+
+@media (prefers-reduced-motion: no-preference){
+  .planta{transform-box:view-box;transform-origin:300px 776px}
+  .cabeza{transform-box:view-box;transform-origin:300px 340px}
+
+  .suena .planta{animation:mecer 7.5s ease-in-out infinite}
+  .suena .cabeza{animation:cabecear 4.3s ease-in-out infinite}
+  @keyframes mecer{
+    0%{rotate:-1.6deg}  18%{rotate:1.1deg}  34%{rotate:-.5deg}
+    52%{rotate:2.4deg}  68%{rotate:.2deg}   84%{rotate:-2deg}  100%{rotate:-1.6deg}
+  }
+  @keyframes cabecear{
+    0%{rotate:1.1deg} 30%{rotate:-1.5deg} 55%{rotate:.9deg} 78%{rotate:-.7deg} 100%{rotate:1.1deg}
+  }
+
+  /* el petalo se suelta: sale por la punta, gira y se va deshaciendo */
+  .suena .petalo-caja{animation:volar 3.4s cubic-bezier(.3,.05,.5,1) forwards}
+  @keyframes volar{
+    0%{transform:none;opacity:1}
+    12%{transform:translate(0,10px) rotate(-6deg)}
+    100%{transform:translate(var(--dx,40px),var(--dy,-330px)) rotate(var(--giro,80deg));
+         opacity:0}
+  }
+
+  /* pausar la musica congela la planta y los petalos en el aire */
+  .quieto .planta,.quieto .cabeza,.quieto .petalo-caja{animation-play-state:paused}
+}
+
 /* ------------------------------------------- la margarita, pintandose sola */
 /* El tallo se dibuja (pathLength=1 + stroke-dashoffset). Los petalos crecen
    desde el centro de la flor, uno por uno, en un orden salteado para que
@@ -212,10 +271,19 @@ JS = """
   btn.addEventListener('click', function(){
     if(au.paused){ au.play(); } else { au.pause(); }
   });
+  var flor = document.querySelector('.flor');
+  function rearmar(){
+    flor.classList.remove('suena','quieto');
+    flor.getBoundingClientRect();
+  }
   au.addEventListener('play',  function(){ btn.setAttribute('aria-pressed','true');
-    btn.setAttribute('aria-label','Pausar'); });
+    btn.setAttribute('aria-label','Pausar');
+    if(au.currentTime < 0.3) rearmar();   // arranca de cero: flor entera de nuevo
+    flor.classList.add('suena'); flor.classList.remove('quieto'); });
   au.addEventListener('pause', function(){ btn.setAttribute('aria-pressed','false');
-    btn.setAttribute('aria-label','Escuchar'); });
+    btn.setAttribute('aria-label','Escuchar');
+    flor.classList.add('quieto'); });
+  au.addEventListener('ended', rearmar);
   au.addEventListener('loadedmetadata', function(){
     rango.max = au.duration; total.textContent = reloj(au.duration);
   });
@@ -247,7 +315,7 @@ HTML = """<!doctype html>
 <meta property="og:image" content="__SITIO__pequenas-composiciones/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%BC%3C/text%3E%3C/svg%3E">
-<style>__CSS__</style>
+<style>__CSS____VUELOS_CSS__</style>
 </head>
 <body>
 <div class="papel" aria-hidden="true"></div>
@@ -333,6 +401,7 @@ HTML = """<!doctype html>
         <ellipse cx="250" cy="352" rx="120" ry="100" fill="#b9c6cc" opacity=".22"/>
       </g>
 
+      <g class="planta">
       <!-- tallo y hojas -->
       <g fill="none" stroke-linecap="round" filter="url(#acuarela-fina)">
         <path class="tallo" pathLength="1" stroke="url(#tallo-verde)" stroke-width="11"
@@ -348,6 +417,7 @@ HTML = """<!doctype html>
       </g>
 
       <!-- los petalos: primero el anillo de atras, despues el de adelante -->
+      <g class="cabeza">
       <g filter="url(#acuarela-fina)">
         __PETALOS_FONDO__
       </g>
@@ -360,6 +430,8 @@ HTML = """<!doctype html>
         <circle cx="300" cy="288" r="52" fill="url(#boton)"/>
         __GRANOS__
       </g>
+      </g><!-- /cabeza -->
+      </g><!-- /planta -->
 
       <!-- salpicaduras sueltas, como en el papel de verdad -->
       <g filter="url(#acuarela)" style="mix-blend-mode:multiply">
@@ -404,7 +476,8 @@ salida = (HTML
           .replace('__PETALOS_FONDO__', petalos_fondo)
           .replace('__PETALOS_FRENTE__', petalos_frente)
           .replace('__GRANOS__', granos)
-          .replace('__SITIO__', SITIO))
+          .replace('__SITIO__', SITIO)
+          .replace('__VUELOS_CSS__', vuelo_css))
 
 # el archivo se escribe en utf-8 con los acentos correctos
 salida = (salida

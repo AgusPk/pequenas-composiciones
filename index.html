@@ -126,6 +126,41 @@ footer{max-width:70rem;margin:0 auto;padding:0 1.5rem 4rem;
   font-family:var(--sans);font-size:.8rem;color:var(--suave)}
 footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
 
+
+/* --------------------------------------------------- viento, con la musica */
+/* Todo esto solo existe cuando suena: .suena prende las animaciones y .quieto
+   las congela donde estan, asi pausar la musica frena la planta en seco y
+   retomarla sigue desde ahi. Al terminar se saca .suena y la flor vuelve
+   entera, lista para la proxima escucha. */
+.petalo-caja{transform-box:view-box;transform-origin:300px 288px;rotate:var(--ang)}
+
+@media (prefers-reduced-motion: no-preference){
+  .planta{transform-box:view-box;transform-origin:300px 776px}
+  .cabeza{transform-box:view-box;transform-origin:300px 340px}
+
+  .suena .planta{animation:mecer 7.5s ease-in-out infinite}
+  .suena .cabeza{animation:cabecear 4.3s ease-in-out infinite}
+  @keyframes mecer{
+    0%{rotate:-1.6deg}  18%{rotate:1.1deg}  34%{rotate:-.5deg}
+    52%{rotate:2.4deg}  68%{rotate:.2deg}   84%{rotate:-2deg}  100%{rotate:-1.6deg}
+  }
+  @keyframes cabecear{
+    0%{rotate:1.1deg} 30%{rotate:-1.5deg} 55%{rotate:.9deg} 78%{rotate:-.7deg} 100%{rotate:1.1deg}
+  }
+
+  /* el petalo se suelta: sale por la punta, gira y se va deshaciendo */
+  .suena .petalo-caja{animation:volar 3.4s cubic-bezier(.3,.05,.5,1) forwards}
+  @keyframes volar{
+    0%{transform:none;opacity:1}
+    12%{transform:translate(0,10px) rotate(-6deg)}
+    100%{transform:translate(var(--dx,40px),var(--dy,-330px)) rotate(var(--giro,80deg));
+         opacity:0}
+  }
+
+  /* pausar la musica congela la planta y los petalos en el aire */
+  .quieto .planta,.quieto .cabeza,.quieto .petalo-caja{animation-play-state:paused}
+}
+
 /* ------------------------------------------- la margarita, pintandose sola */
 /* El tallo se dibuja (pathLength=1 + stroke-dashoffset). Los petalos crecen
    desde el centro de la flor, uno por uno, en un orden salteado para que
@@ -169,7 +204,32 @@ footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
     @keyframes asomar{from{opacity:0;translate:0 1.4rem}}
   }
 }
-</style>
+.suena .petalo-caja[data-idx="0"]{--dx:-48px;--dy:-278px;--giro:-33deg;animation-delay:7.0s}
+.suena .petalo-caja[data-idx="7"]{--dx:-62px;--dy:-271px;--giro:-31deg;animation-delay:17.9s}
+.suena .petalo-caja[data-idx="14"]{--dx:75px;--dy:-396px;--giro:85deg;animation-delay:28.8s}
+.suena .petalo-caja[data-idx="21"]{--dx:-50px;--dy:-351px;--giro:-71deg;animation-delay:39.8s}
+.suena .petalo-caja[data-idx="2"]{--dx:-59px;--dy:-278px;--giro:-91deg;animation-delay:50.7s}
+.suena .petalo-caja[data-idx="9"]{--dx:77px;--dy:-401px;--giro:98deg;animation-delay:61.6s}
+.suena .petalo-caja[data-idx="16"]{--dx:54px;--dy:-293px;--giro:-61deg;animation-delay:72.5s}
+.suena .petalo-caja[data-idx="23"]{--dx:23px;--dy:-384px;--giro:113deg;animation-delay:83.4s}
+.suena .petalo-caja[data-idx="4"]{--dx:68px;--dy:-275px;--giro:34deg;animation-delay:94.4s}
+.suena .petalo-caja[data-idx="11"]{--dx:31px;--dy:-346px;--giro:-103deg;animation-delay:105.3s}
+.suena .petalo-caja[data-idx="18"]{--dx:-5px;--dy:-275px;--giro:139deg;animation-delay:116.2s}
+.suena .petalo-caja[data-idx="25"]{--dx:66px;--dy:-353px;--giro:-64deg;animation-delay:127.1s}
+.suena .petalo-caja[data-idx="6"]{--dx:74px;--dy:-357px;--giro:122deg;animation-delay:138.0s}
+.suena .petalo-caja[data-idx="13"]{--dx:63px;--dy:-346px;--giro:-28deg;animation-delay:149.0s}
+.suena .petalo-caja[data-idx="20"]{--dx:18px;--dy:-333px;--giro:-108deg;animation-delay:159.9s}
+.suena .petalo-caja[data-idx="1"]{--dx:-35px;--dy:-398px;--giro:-146deg;animation-delay:170.8s}
+.suena .petalo-caja[data-idx="8"]{--dx:-82px;--dy:-366px;--giro:-70deg;animation-delay:181.7s}
+.suena .petalo-caja[data-idx="15"]{--dx:6px;--dy:-340px;--giro:-50deg;animation-delay:192.6s}
+.suena .petalo-caja[data-idx="22"]{--dx:90px;--dy:-293px;--giro:-28deg;animation-delay:203.6s}
+.suena .petalo-caja[data-idx="3"]{--dx:-54px;--dy:-368px;--giro:-72deg;animation-delay:214.5s}
+.suena .petalo-caja[data-idx="10"]{--dx:-26px;--dy:-387px;--giro:-57deg;animation-delay:225.4s}
+.suena .petalo-caja[data-idx="17"]{--dx:11px;--dy:-414px;--giro:-128deg;animation-delay:236.3s}
+.suena .petalo-caja[data-idx="24"]{--dx:-79px;--dy:-299px;--giro:85deg;animation-delay:247.2s}
+.suena .petalo-caja[data-idx="5"]{--dx:21px;--dy:-300px;--giro:-54deg;animation-delay:258.2s}
+.suena .petalo-caja[data-idx="12"]{--dx:-58px;--dy:-338px;--giro:-146deg;animation-delay:269.1s}
+.suena .petalo-caja[data-idx="19"]{--dx:36px;--dy:-412px;--giro:146deg;animation-delay:280.0s}</style>
 </head>
 <body>
 <div class="papel" aria-hidden="true"></div>
@@ -255,6 +315,7 @@ footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
         <ellipse cx="250" cy="352" rx="120" ry="100" fill="#b9c6cc" opacity=".22"/>
       </g>
 
+      <g class="planta">
       <!-- tallo y hojas -->
       <g fill="none" stroke-linecap="round" filter="url(#acuarela-fina)">
         <path class="tallo" pathLength="1" stroke="url(#tallo-verde)" stroke-width="11"
@@ -270,35 +331,36 @@ footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
       </g>
 
       <!-- los petalos: primero el anillo de atras, despues el de adelante -->
+      <g class="cabeza">
       <g filter="url(#acuarela-fina)">
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(13.8)" style="animation-delay:1.30s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(41.5)" style="animation-delay:1.52s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(69.2)" style="animation-delay:1.75s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(96.9)" style="animation-delay:1.39s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(124.6)" style="animation-delay:1.61s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(152.3)" style="animation-delay:1.84s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(180.0)" style="animation-delay:1.48s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(207.7)" style="animation-delay:1.71s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(235.4)" style="animation-delay:1.34s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(263.1)" style="animation-delay:1.57s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(290.8)" style="animation-delay:1.79s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(318.5)" style="animation-delay:1.44s"/>
-        <path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" transform="rotate(346.2)" style="animation-delay:1.66s"/>
+        <g class="petalo-caja" data-idx="0" style="--ang:13.8deg"><path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" style="animation-delay:1.30s"/></g>
+        <g class="petalo-caja" data-idx="1" style="--ang:41.5deg"><path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" style="animation-delay:1.52s"/></g>
+        <g class="petalo-caja" data-idx="2" style="--ang:69.2deg"><path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" style="animation-delay:1.75s"/></g>
+        <g class="petalo-caja" data-idx="3" style="--ang:96.9deg"><path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" style="animation-delay:1.39s"/></g>
+        <g class="petalo-caja" data-idx="4" style="--ang:124.6deg"><path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" style="animation-delay:1.61s"/></g>
+        <g class="petalo-caja" data-idx="5" style="--ang:152.3deg"><path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" style="animation-delay:1.84s"/></g>
+        <g class="petalo-caja" data-idx="6" style="--ang:180.0deg"><path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" style="animation-delay:1.48s"/></g>
+        <g class="petalo-caja" data-idx="7" style="--ang:207.7deg"><path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" style="animation-delay:1.71s"/></g>
+        <g class="petalo-caja" data-idx="8" style="--ang:235.4deg"><path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" style="animation-delay:1.34s"/></g>
+        <g class="petalo-caja" data-idx="9" style="--ang:263.1deg"><path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" style="animation-delay:1.57s"/></g>
+        <g class="petalo-caja" data-idx="10" style="--ang:290.8deg"><path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" style="animation-delay:1.79s"/></g>
+        <g class="petalo-caja" data-idx="11" style="--ang:318.5deg"><path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" style="animation-delay:1.44s"/></g>
+        <g class="petalo-caja" data-idx="12" style="--ang:346.2deg"><path class="petalo atras" d="M 300 243 C 275 214, 266 174, 283 142 C 291 124, 309 124, 317 142 C 334 174, 325 214, 300 243 Z" style="animation-delay:1.66s"/></g>
       </g>
       <g filter="url(#acuarela-fina)">
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(0.0)" style="animation-delay:1.60s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(27.7)" style="animation-delay:1.83s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(55.4)" style="animation-delay:2.05s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(83.1)" style="animation-delay:1.69s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(110.8)" style="animation-delay:1.92s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(138.5)" style="animation-delay:2.14s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(166.2)" style="animation-delay:1.78s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(193.8)" style="animation-delay:2.00s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(221.5)" style="animation-delay:1.65s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(249.2)" style="animation-delay:1.87s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(276.9)" style="animation-delay:2.10s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(304.6)" style="animation-delay:1.74s"/>
-        <path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" transform="rotate(332.3)" style="animation-delay:1.96s"/>
+        <g class="petalo-caja" data-idx="13" style="--ang:0.0deg"><path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" style="animation-delay:1.60s"/></g>
+        <g class="petalo-caja" data-idx="14" style="--ang:27.7deg"><path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" style="animation-delay:1.83s"/></g>
+        <g class="petalo-caja" data-idx="15" style="--ang:55.4deg"><path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" style="animation-delay:2.05s"/></g>
+        <g class="petalo-caja" data-idx="16" style="--ang:83.1deg"><path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" style="animation-delay:1.69s"/></g>
+        <g class="petalo-caja" data-idx="17" style="--ang:110.8deg"><path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" style="animation-delay:1.92s"/></g>
+        <g class="petalo-caja" data-idx="18" style="--ang:138.5deg"><path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" style="animation-delay:2.14s"/></g>
+        <g class="petalo-caja" data-idx="19" style="--ang:166.2deg"><path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" style="animation-delay:1.78s"/></g>
+        <g class="petalo-caja" data-idx="20" style="--ang:193.8deg"><path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" style="animation-delay:2.00s"/></g>
+        <g class="petalo-caja" data-idx="21" style="--ang:221.5deg"><path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" style="animation-delay:1.65s"/></g>
+        <g class="petalo-caja" data-idx="22" style="--ang:249.2deg"><path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" style="animation-delay:1.87s"/></g>
+        <g class="petalo-caja" data-idx="23" style="--ang:276.9deg"><path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" style="animation-delay:2.10s"/></g>
+        <g class="petalo-caja" data-idx="24" style="--ang:304.6deg"><path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" style="animation-delay:1.74s"/></g>
+        <g class="petalo-caja" data-idx="25" style="--ang:332.3deg"><path class="petalo adelante" d="M 300 240 C 278 211, 272 168, 286 130 C 292 113, 308 113, 314 130 C 328 168, 322 211, 300 240 Z" style="animation-delay:1.96s"/></g>
       </g>
 
       <!-- el boton, con el granulado del pigmento -->
@@ -331,6 +393,8 @@ footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
         <circle cx="318.3" cy="319.9" r="1.6" fill="#9a6b1f" opacity=".30"/>
         <circle cx="264.4" cy="276.6" r="2.3" fill="#9a6b1f" opacity=".30"/>
       </g>
+      </g><!-- /cabeza -->
+      </g><!-- /planta -->
 
       <!-- salpicaduras sueltas, como en el papel de verdad -->
       <g filter="url(#acuarela)" style="mix-blend-mode:multiply">
@@ -380,10 +444,19 @@ footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
   btn.addEventListener('click', function(){
     if(au.paused){ au.play(); } else { au.pause(); }
   });
+  var flor = document.querySelector('.flor');
+  function rearmar(){
+    flor.classList.remove('suena','quieto');
+    flor.getBoundingClientRect();
+  }
   au.addEventListener('play',  function(){ btn.setAttribute('aria-pressed','true');
-    btn.setAttribute('aria-label','Pausar'); });
+    btn.setAttribute('aria-label','Pausar');
+    if(au.currentTime < 0.3) rearmar();   // arranca de cero: flor entera de nuevo
+    flor.classList.add('suena'); flor.classList.remove('quieto'); });
   au.addEventListener('pause', function(){ btn.setAttribute('aria-pressed','false');
-    btn.setAttribute('aria-label','Escuchar'); });
+    btn.setAttribute('aria-label','Escuchar');
+    flor.classList.add('quieto'); });
+  au.addEventListener('ended', rearmar);
   au.addEventListener('loadedmetadata', function(){
     rango.max = au.duration; total.textContent = reloj(au.duration);
   });

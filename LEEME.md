@@ -8,6 +8,9 @@ El sitio tiene dos piezas:
 - `index.html` en la raíz: la **landing**, con la margarita en acuarela que se
   abre sola, la grabación al piano y el acceso al libro. La genera
   `hacer-landing.py` (los 26 pétalos se emiten por código, no a mano).
+  Al poner play se levanta viento: la planta se mece y los pétalos se van
+  soltando uno cada ~11 s, repartidos a lo largo de los 5:06. Pausar congela
+  todo donde está; volver a empezar devuelve la flor entera.
 - `audio/`: la grabación, en AAC (5 MB, la que suena) y el MP3 original de
   320 kbps (12 MB, respaldo para navegadores viejos).
 - `pequenas-composiciones/`: el **libro** completo.
