@@ -3,17 +3,27 @@
 
 **Publicado en → https://aguspk.github.io/pequenas-composiciones/**
 
+El sitio tiene dos piezas:
+
+- `index.html` en la raíz: la **landing** de Margarita Sastre Inchauspe, con la
+  acuarela animada y el acceso al libro.
+- `pequenas-composiciones/`: el **libro** completo.
+
+Cuando se compre `margaritasastre.com` y se apunte al repo, las direcciones
+quedan `margaritasastre.com` y `margaritasastre.com/pequenas-composiciones/`.
+
 Versión ordenada del original `2 PEQUEÑAS COMPOSICIONES (1).docx`.
 
 ## Qué hay acá
 
 | Archivo | Para qué |
 |---|---|
-| `index.html` | El libro como página web. Un solo archivo + la carpeta `img/`. Se abre en cualquier navegador y se puede subir tal cual a un blog. |
-| `img/` | Las 118 fotos, optimizadas para web (24 MB → 7,7 MB, ninguna pierde nitidez). |
-| `Pequenas-composiciones-de-una-nina.docx` | El mismo contenido en Word, para copiar y pegar en WordPress, Medium, Substack, etc. Se descarga también desde el pie de la página. |
-| `og.jpg` | La imagen de vista previa que aparece al compartir el link por WhatsApp o redes. |
-| `img/fondo-beethoven.jpg` | Fondo opcional: boceto autógrafo de la Sonata para piano op. 101 de Beethoven (1816), Library of Congress (Digital ID molden-0508), **dominio público**. Recortado, desaturado y aclarado para que no compita con el texto. |
+| `index.html` | La landing del sitio: acuarela animada y acceso al libro. |
+| `pequenas-composiciones/index.html` | El libro como página web. Un solo archivo + la carpeta `img/`. |
+| `pequenas-composiciones/img/` | Las 118 fotos, optimizadas para web (24 MB → 7,7 MB, ninguna pierde nitidez). |
+| `pequenas-composiciones/Pequenas-composiciones-de-una-nina.docx` | El mismo contenido en Word, para copiar y pegar en WordPress, Medium, Substack, etc. Se descarga también desde el pie de la página. |
+| `pequenas-composiciones/og.jpg` | La imagen de vista previa que aparece al compartir el link por WhatsApp o redes. |
+| `pequenas-composiciones/img/fondo-beethoven.jpg` | Fondo opcional: boceto autógrafo de la Sonata para piano op. 101 de Beethoven (1816), Library of Congress (Digital ID molden-0508), **dominio público**. Recortado, desaturado y aclarado para que no compita con el texto. |
 
 ## Qué se ordenó
 
