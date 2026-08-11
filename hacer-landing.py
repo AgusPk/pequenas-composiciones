@@ -168,6 +168,8 @@ body{margin:0;background:var(--papel);color:var(--tinta);
 .tocar[aria-pressed="true"] .pausa{display:block}
 .pista{flex:1;min-width:0}
 .pista .titulo{font-size:.95rem;margin:0 0 .35rem;line-height:1.3}
+.cinta{font-family:var(--sans);font-size:.72rem;line-height:1.4;color:var(--suave);
+  margin:0 0 .5rem}
 .barra{display:flex;align-items:center;gap:.55rem}
 .barra input[type=range]{flex:1;min-width:0;height:1.05rem;-webkit-appearance:none;
   appearance:none;background:transparent;cursor:pointer;margin:0}
@@ -206,6 +208,7 @@ body{margin:0;background:var(--papel);color:var(--tinta);
 footer{max-width:70rem;margin:0 auto;padding:0 1.5rem 4rem;
   font-family:var(--sans);font-size:.8rem;color:var(--suave)}
 footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
+.credito{opacity:.75}
 
 
 /* --------------------------------------------------- viento, con la musica */
@@ -353,7 +356,7 @@ HTML = """<!doctype html>
   <div class="presentacion">
     <h1 class="nombre">Margarita Sastre<br>Inchauspe</h1>
     <div class="filete"></div>
-    <p class="lema">Una vida entre pianos, campos y amigas, contada mientras le hacian las manos.</p>
+    <p class="lema">Una vida entre pianos, campos y amigas.</p>
 
     <a class="ir-al-libro" href="pequenas-composiciones/">
       Leer <em>Pequenas composiciones de una nina</em> <span class="flecha">&rarr;</span></a>
@@ -371,6 +374,8 @@ HTML = """<!doctype html>
         </button>
         <div class="pista">
           <p class="titulo">Beethoven &middot; Sonata n.&ordm;&nbsp;7, primer movimiento</p>
+          <p class="cinta">Grabacion casera en cassette, en Ombu. Se escucha lo que
+            guardo la cinta.</p>
           <div class="barra">
             <input type="range" min="0" max="100" value="0" step="0.5"
                    aria-label="Posicion de la grabacion">
@@ -492,7 +497,8 @@ HTML = """<!doctype html>
   </a>
 </section>
 
-<footer><p>Buenos Aires &middot; 2026</p></footer>
+<footer><p>Buenos Aires &middot; 2026 <span class="credito">&middot; Diseno y desarrollo:
+  Agustin</span></p></footer>
 </div>
 
 <script>__JS__</script>
@@ -517,6 +523,9 @@ salida = (salida
   .replace('hacian las manos', 'hacían las manos')
   .replace('Posicion de la grabacion', 'Posición de la grabación')
   .replace('abriendose', 'abriéndose')
+  .replace('Grabacion casera en cassette, en Ombu. Se escucha lo que\n            guardo la cinta.', 'Grabación casera en cassette, en Ombú. Se escucha lo que guardó la cinta.')
+  .replace('Diseno y desarrollo:', 'Diseño y desarrollo:')
+  .replace('Agustin</span>', 'Agustín</span>')
   .replace('Leer <em>Pequenas composiciones de una nina</em>', 'Leer <em>Pequeñas composiciones de una niña</em>')
   .replace('escritos y el piano', 'escritos y el piano'))
 

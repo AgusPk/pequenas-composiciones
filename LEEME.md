@@ -13,8 +13,13 @@ El sitio tiene dos piezas:
   rearma y vuelve a empezar. Con los 5:06 de grabación da dos vueltas
   completas. Pausar congela todo donde está; volver a empezar desde cero
   devuelve la flor entera.
-- `audio/`: la grabación, en AAC (5 MB, la que suena) y el MP3 original de
-  320 kbps (12 MB, respaldo para navegadores viejos).
+- `audio/`: la grabación —Beethoven, Sonata n.º 7, primer movimiento, en
+  cassette casero grabado en Ombú— en AAC (5 MB, la que suena) y el MP3
+  original de 320 kbps (12 MB, respaldo para navegadores viejos).
+- `contenido-libro.py`: el modelo de contenido del libro, con las 24
+  correcciones de la autora declaradas. El resto del pipeline (`build.py`,
+  `makedocx.js`, `paras.json`) se perdió al limpiarse el directorio temporal;
+  hay que rearmarlo si vuelve otra tanda de correcciones.
 - `pequenas-composiciones/`: el **libro** completo.
 
 Cuando se compre `margaritasastre.com` y se apunte al repo, las direcciones
