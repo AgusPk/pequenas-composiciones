@@ -88,13 +88,13 @@ vuelo_css = '\n'.join(bloques + asignaciones)
 
 CSS = """
 :root{
-  --tinta:#2a2620; --suave:#6d6555; --linea:#ddd3bd; --acento:#8a6634;
+  --tinta:#2a2620; --suave:#524b3c; --linea:#d5cab2; --acento:#745529;
   --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
   --papel:#f4efe2; --tarjeta:rgba(255,253,247,.62); --vidrio:rgba(255,255,255,.5);
 }
 @media (prefers-color-scheme:dark){
-  :root{--tinta:#ece7db; --suave:#a9a294; --linea:#3a3830; --acento:#cfa869;
+  :root{--tinta:#ece7db; --suave:#bdb6a6; --linea:#403e35; --acento:#d9b478;
         /* la tarjeta tiene que oscurecerse con el papel: un panel claro con
            texto claro encima dejaba el titulo en contraste 1.98 */
         --tarjeta:rgba(42,45,38,.72); --vidrio:rgba(255,255,255,.06);}
@@ -111,8 +111,8 @@ body{margin:0;background:var(--papel);color:var(--tinta);
 .papel{position:fixed;inset:0;z-index:0;pointer-events:none;
   background-color:var(--papel);
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='.055'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='620' height='620'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.014' numOctaves='5'/%3E%3CfeColorMatrix type='saturate' values='.15'/%3E%3C/filter%3E%3Crect width='620' height='620' filter='url(%23f)' opacity='.10'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='.042'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='620' height='620'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.014' numOctaves='5'/%3E%3CfeColorMatrix type='saturate' values='.15'/%3E%3C/filter%3E%3Crect width='620' height='620' filter='url(%23f)' opacity='.07'/%3E%3C/svg%3E"),
     radial-gradient(58% 44% at 18% 12%, rgba(150,168,122,.13), transparent 70%),
     radial-gradient(52% 40% at 86% 26%, rgba(196,158,96,.13), transparent 72%),
     radial-gradient(60% 46% at 72% 88%, rgba(126,152,164,.11), transparent 72%),
@@ -140,7 +140,7 @@ body{margin:0;background:var(--papel);color:var(--tinta);
 .nombre{font-size:clamp(2.1rem,6.6vw,3.4rem);line-height:1.08;margin:0 0 .7rem;
   font-weight:600;letter-spacing:-.015em}
 .filete{width:4.5rem;height:1px;background:var(--linea);margin:0 0 1.5rem}
-.lema{margin:0 0 2rem;color:var(--suave);font-size:1.1rem;font-style:italic;max-width:26rem}
+.lema{margin:0 0 2rem;color:var(--suave);font-size:1.16rem;font-style:italic;max-width:26rem}
 
 /* ------------------------------------------------------------------ piano */
 .ir-al-libro{display:inline-flex;align-items:baseline;gap:.45rem;margin:0 0 1.6rem;
@@ -154,7 +154,7 @@ body{margin:0;background:var(--papel);color:var(--tinta);
 .piano{max-width:24rem;padding:1rem 1.15rem;border:1px solid var(--linea);
   border-radius:12px;background:var(--tarjeta);
   -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
-.rotulo-piano{font-family:var(--sans);font-size:.72rem;letter-spacing:.14em;
+.rotulo-piano{font-family:var(--sans);font-size:.86rem;letter-spacing:.13em;
   text-transform:uppercase;color:var(--suave);margin:0 0 .55rem}
 .mando{display:flex;align-items:center;gap:.8rem}
 .tocar{flex:none;width:2.9rem;height:2.9rem;border-radius:50%;
@@ -167,8 +167,8 @@ body{margin:0;background:var(--papel);color:var(--tinta);
 .tocar[aria-pressed="true"] .play{display:none}
 .tocar[aria-pressed="true"] .pausa{display:block}
 .pista{flex:1;min-width:0}
-.pista .titulo{font-size:.95rem;margin:0 0 .35rem;line-height:1.3}
-.cinta{font-family:var(--sans);font-size:.72rem;line-height:1.4;color:var(--suave);
+.pista .titulo{font-size:1rem;margin:0 0 .35rem;line-height:1.3}
+.cinta{font-family:var(--sans);font-size:.86rem;line-height:1.45;color:var(--suave);
   margin:0 0 .5rem}
 .barra{display:flex;align-items:center;gap:.55rem}
 .barra input[type=range]{flex:1;min-width:0;height:1.05rem;-webkit-appearance:none;
@@ -181,12 +181,12 @@ body{margin:0;background:var(--papel);color:var(--tinta);
 .barra input[type=range]::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
   background:var(--acento)}
 .barra input[type=range]:focus-visible{outline:2px solid var(--acento);outline-offset:3px}
-.reloj{font-family:var(--sans);font-size:.72rem;color:var(--suave);
+.reloj{font-family:var(--sans);font-size:.82rem;color:var(--suave);
   font-variant-numeric:tabular-nums;flex:none}
 
 /* ------------------------------------------------------------------ obras */
 .obras{max-width:70rem;margin:0 auto;padding:0 1.5rem 5rem;scroll-margin-top:1.5rem}
-.rotulo{font-family:var(--sans);font-size:.75rem;letter-spacing:.16em;
+.rotulo{font-family:var(--sans);font-size:.82rem;letter-spacing:.14em;
   text-transform:uppercase;color:var(--suave);margin:0 0 1.1rem}
 .obra{display:grid;gap:1.5rem;align-items:center;padding:1.5rem;
   border:1px solid var(--linea);border-radius:14px;background:var(--tarjeta);
@@ -206,7 +206,7 @@ body{margin:0;background:var(--papel);color:var(--tinta);
 .flecha{transition:transform .25s ease}
 
 footer{max-width:70rem;margin:0 auto;padding:0 1.5rem 4rem;
-  font-family:var(--sans);font-size:.8rem;color:var(--suave)}
+  font-family:var(--sans);font-size:.86rem;color:var(--suave)}
 footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
 .credito{opacity:.75}
 
@@ -498,7 +498,7 @@ HTML = """<!doctype html>
 </section>
 
 <footer><p>Buenos Aires &middot; 2026 <span class="credito">&middot; Diseno y desarrollo:
-  Agustin</span></p></footer>
+  Agustin Perkins</span></p></footer>
 </div>
 
 <script>__JS__</script>
@@ -525,7 +525,7 @@ salida = (salida
   .replace('abriendose', 'abriéndose')
   .replace('Grabacion casera en cassette, en Ombu. Se escucha lo que\n            guardo la cinta.', 'Grabación casera en cassette, en Ombú. Se escucha lo que guardó la cinta.')
   .replace('Diseno y desarrollo:', 'Diseño y desarrollo:')
-  .replace('Agustin</span>', 'Agustín</span>')
+  .replace('Agustin Perkins</span>', 'Agustín Perkins</span>')
   .replace('Leer <em>Pequenas composiciones de una nina</em>', 'Leer <em>Pequeñas composiciones de una niña</em>')
   .replace('escritos y el piano', 'escritos y el piano'))
 
