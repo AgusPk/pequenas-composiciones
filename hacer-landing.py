@@ -92,12 +92,14 @@ CSS = """
   --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
   --papel:#f4efe2; --tarjeta:rgba(255,253,247,.62); --vidrio:rgba(255,255,255,.5);
+  --petalo-borde:#aea892; --petalo-linea:1.15; --halo:1;
 }
 @media (prefers-color-scheme:dark){
   :root{--tinta:#ece7db; --suave:#bdb6a6; --linea:#403e35; --acento:#d9b478;
         /* la tarjeta tiene que oscurecerse con el papel: un panel claro con
            texto claro encima dejaba el titulo en contraste 1.98 */
-        --tarjeta:rgba(42,45,38,.72); --vidrio:rgba(255,255,255,.06);}
+        --tarjeta:rgba(42,45,38,.72); --vidrio:rgba(255,255,255,.06);
+        --petalo-borde:#cfcbb8; --petalo-linea:.9; --halo:.7;}
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -111,14 +113,15 @@ body{margin:0;background:var(--papel);color:var(--tinta);
 .papel{position:fixed;inset:0;z-index:0;pointer-events:none;
   background-color:var(--papel);
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='.042'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='620' height='620'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.014' numOctaves='5'/%3E%3CfeColorMatrix type='saturate' values='.15'/%3E%3C/filter%3E%3Crect width='620' height='620' filter='url(%23f)' opacity='.07'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='.042'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='620' height='620'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.014' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='.15'/%3E%3C/filter%3E%3Crect width='620' height='620' filter='url(%23f)' opacity='.07'/%3E%3C/svg%3E"),
     radial-gradient(58% 44% at 18% 12%, rgba(150,168,122,.13), transparent 70%),
     radial-gradient(52% 40% at 86% 26%, rgba(196,158,96,.13), transparent 72%),
     radial-gradient(60% 46% at 72% 88%, rgba(126,152,164,.11), transparent 72%),
     radial-gradient(46% 38% at 8% 76%, rgba(178,140,104,.10), transparent 74%),
     radial-gradient(120% 100% at 50% 45%, transparent 52%, rgba(120,100,64,.10));
-  background-size:160px 160px, 620px 620px, auto, auto, auto, auto, auto;
+  background-size:160px 160px, cover, auto, auto, auto, auto, auto;
+  background-repeat:repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
 }
 @media (prefers-color-scheme:dark){
   /* Solo cambia el color de base. Antes habia aca un filter:invert(1) que daba
@@ -248,7 +251,7 @@ footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
    parezca que se abre y no que se arma en fila. Sin movimiento, la flor ya
    esta pintada al cargar. */
 .tallo{stroke-dasharray:1;stroke-dashoffset:0}
-.petalo{fill:url(#petalo-lavado);stroke:#c9c6b2;stroke-width:.9;
+.petalo{fill:url(#petalo-lavado);stroke:var(--petalo-borde);stroke-width:var(--petalo-linea);
   transform-box:view-box;transform-origin:300px 288px}
 .petalo.atras{fill:url(#petalo-sombra);opacity:.92}
 
@@ -434,10 +437,10 @@ HTML = """<!doctype html>
       </defs>
 
       <!-- la aguada de fondo: la mancha diluida sobre la que se pinta la flor -->
-      <g class="lavado" filter="url(#difuso)" style="mix-blend-mode:multiply">
-        <ellipse cx="302" cy="292" rx="215" ry="200" fill="#cfd6b4" opacity=".34"/>
-        <ellipse cx="356" cy="236" rx="130" ry="110" fill="#d8c79a" opacity=".26"/>
-        <ellipse cx="250" cy="352" rx="120" ry="100" fill="#b9c6cc" opacity=".22"/>
+      <g class="lavado" filter="url(#difuso)" style="mix-blend-mode:multiply;opacity:var(--halo)">
+        <ellipse cx="302" cy="292" rx="215" ry="200" fill="#c6cfa6" opacity=".46"/>
+        <ellipse cx="356" cy="236" rx="130" ry="110" fill="#d4c08d" opacity=".36"/>
+        <ellipse cx="250" cy="352" rx="120" ry="100" fill="#adbcc4" opacity=".30"/>
       </g>
 
       <g class="planta">
