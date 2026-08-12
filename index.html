@@ -51,8 +51,11 @@ body{margin:0;background:var(--papel);color:var(--tinta);
   background-size:160px 160px, 620px 620px, auto, auto, auto, auto, auto;
 }
 @media (prefers-color-scheme:dark){
-  .papel{background-color:#171814;
-    background-blend-mode:normal;filter:invert(1) hue-rotate(180deg) brightness(.92)}
+  /* Solo cambia el color de base. Antes habia aca un filter:invert(1) que daba
+     vuelta toda la capa: el papel salia gris claro y el texto, que en oscuro es
+     crema, quedaba claro sobre claro. Las texturas y las aguadas de arriba
+     funcionan igual sobre fondo oscuro, no hay que invertir nada. */
+  .papel{background-color:#141511}
 }
 .hoja{position:relative;z-index:1}
 
