@@ -22,14 +22,14 @@
   --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
   --papel:#f4efe2; --tarjeta:rgba(255,253,247,.62); --vidrio:rgba(255,255,255,.5);
-  --petalo-borde:#aea892; --petalo-linea:1.15; --halo:1;
+  --petalo-borde:#aea892; --petalo-linea:1.15; --halo:1; --globo:#fffdf7;
 }
 @media (prefers-color-scheme:dark){
   :root{--tinta:#ece7db; --suave:#bdb6a6; --linea:#403e35; --acento:#d9b478;
         /* la tarjeta tiene que oscurecerse con el papel: un panel claro con
            texto claro encima dejaba el titulo en contraste 1.98 */
         --tarjeta:rgba(42,45,38,.72); --vidrio:rgba(255,255,255,.06);
-        --petalo-borde:#cfcbb8; --petalo-linea:.9; --halo:.7;}
+        --petalo-borde:#cfcbb8; --petalo-linea:.9; --halo:.7; --globo:#2b2e26;}
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -92,6 +92,29 @@ body{margin:0;background:var(--papel);color:var(--tinta);
   -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 .rotulo-piano{font-family:var(--sans);font-size:.86rem;letter-spacing:.13em;
   text-transform:uppercase;color:var(--suave);margin:0 0 .55rem}
+/* Sugerencia de auriculares. Sin dependencias: el globo aparece en hover y en
+   foco de teclado, y el texto va siempre en aria-describedby, asi que un lector
+   de pantalla lo anuncia aunque nunca se muestre. En pantallas tactiles, donde
+   no hay hover, el texto se muestra escrito y el globo se apaga. */
+.auriculares{position:relative;display:inline-flex;align-items:center;
+  margin-left:.45rem;vertical-align:-.2em;color:var(--suave);cursor:help}
+.auriculares svg{width:1.1em;height:1.1em}
+.auriculares:hover,.auriculares:focus{color:var(--acento)}
+.auriculares:focus-visible{outline:2px solid var(--acento);outline-offset:3px;border-radius:3px}
+.globo{position:absolute;left:50%;bottom:calc(100% + .55rem);translate:-50% 0;
+  width:max-content;max-width:12.5rem;padding:.45rem .65rem;
+  border:1px solid var(--linea);border-radius:9px;background:var(--globo);
+  color:var(--tinta);font-family:var(--sans);font-size:.78rem;line-height:1.35;
+  letter-spacing:0;text-transform:none;box-shadow:0 4px 18px rgba(0,0,0,.20);
+  opacity:0;visibility:hidden;transition:opacity .16s ease,visibility .16s;z-index:5}
+.auriculares:hover .globo,.auriculares:focus .globo{opacity:1;visibility:visible}
+.auriculares.callado .globo{opacity:0;visibility:hidden}
+@media (hover:none){
+  .globo{position:static;translate:none;opacity:1;visibility:visible;
+    display:block;margin:.35rem 0 0;max-width:none;border:0;background:none;
+    box-shadow:none;padding:0;color:var(--suave)}
+  .auriculares{display:block;margin:.2rem 0 0}
+}
 .mando{display:flex;align-items:center;gap:.8rem}
 .tocar{flex:none;width:2.9rem;height:2.9rem;border-radius:50%;
   border:1px solid var(--linea);background:var(--vidrio);color:var(--acento);
@@ -286,7 +309,15 @@ footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
       Leer <em>Pequeñas composiciones de una niña</em> <span class="flecha">&rarr;</span></a>
 
     <div class="piano">
-      <p class="rotulo-piano">Margarita al piano</p>
+      <p class="rotulo-piano">Margarita al piano<span class="auriculares" tabindex="0"
+        aria-describedby="tip-auriculares">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 14v-2a8 8 0 0 1 16 0v2"/>
+        <rect x="2.2" y="13.6" width="4.6" height="7" rx="2.3"/>
+        <rect x="17.2" y="13.6" width="4.6" height="7" rx="2.3"/></svg>
+        <span class="globo" id="tip-auriculares" role="tooltip">Mejor con auriculares</span>
+      </span></p>
       <div class="mando">
         <button class="tocar" type="button" aria-pressed="false" aria-label="Escuchar"
                 aria-controls="piano">
@@ -475,6 +506,13 @@ footer p{margin:0;padding-top:1.4rem;border-top:1px solid var(--linea)}
 
 <script>
 (function(){
+  document.addEventListener('keydown', function(e){
+    if(e.key !== 'Escape') return;
+    var t = document.querySelector('.auriculares'); if(!t) return;
+    t.classList.add('callado'); t.blur();
+    setTimeout(function(){ t.classList.remove('callado'); }, 400);
+  });
+
   var au = document.getElementById('piano');
   var btn = document.querySelector('.tocar');
   var rango = document.querySelector('.barra input');
