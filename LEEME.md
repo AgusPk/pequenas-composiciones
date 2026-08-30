@@ -1,7 +1,7 @@
 # Pequeñas composiciones de una niña
 ### Margarita Sastre Inchauspe — Buenos Aires, febrero 2026
 
-**Publicado en → https://aguspk.github.io/pequenas-composiciones/**
+**Publicado en → https://margaritasastre.com/**
 
 El sitio tiene dos piezas:
 
